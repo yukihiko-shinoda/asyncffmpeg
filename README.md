@@ -1,6 +1,8 @@
 # Asynchronous FFmpeg
 
 [![Test](https://github.com/yukihiko-shinoda/asyncffmpeg/workflows/Test/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions?query=workflow%3ATest)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d0715bdfc5dd7725e0a2/test_coverage)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d0715bdfc5dd7725e0a2/maintainability)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg/maintainability)
 [![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/yukihiko-shinoda/asyncffmpeg)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg)
 [![Updates](https://pyup.io/repos/github/yukihiko-shinoda/asyncffmpeg/shield.svg)](https://pyup.io/repos/github/yukihiko-shinoda/asyncffmpeg/)
 [![Python versions](https://img.shields.io/pypi/pyversions/asyncffmpeg.svg)](https://pypi.org/project/asyncffmpeg)
