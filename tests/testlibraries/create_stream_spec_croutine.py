@@ -1,7 +1,7 @@
 """Coroutines for creating stream spec."""
 import ffmpeg
 
-from asyncffmpeg.type_alias import StreamSpec
+from asyncffmpeg import StreamSpec
 
 
 class CreateStreamSpecCoroutineCopy:

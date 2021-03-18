@@ -14,8 +14,7 @@ import psutil
 import pytest
 from asynccpu import ProcessTaskPoolExecutor
 
-from asyncffmpeg.exceptions import FFmpegProcessError
-from asyncffmpeg.ffmpeg_coroutine_factory import FFmpegCoroutineFactory
+from asyncffmpeg import FFmpegCoroutineFactory, FFmpegProcessError
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_SHORT
 from tests.testlibraries.create_stream_spec_croutine import (
     CreateStreamSpecCoroutineCopy,

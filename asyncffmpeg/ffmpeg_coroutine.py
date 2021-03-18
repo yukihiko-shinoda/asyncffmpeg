@@ -6,6 +6,8 @@ from typing import Awaitable, Callable, Optional, Type, TypeVar
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from asyncffmpeg.type_alias import StreamSpec
 
+__all__ = ["FFmpegCoroutine"]
+
 # Since the seconds to Docker wait for stop before killing it is 10
 # see: https://docs.docker.com/engine/reference/commandline/stop/
 TIME_TO_FORCE_TERMINATION = 8

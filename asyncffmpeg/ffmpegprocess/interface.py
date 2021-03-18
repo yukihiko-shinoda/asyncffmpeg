@@ -9,6 +9,8 @@ from asyncffmpeg.exceptions import FFmpegProcessError
 from asyncffmpeg.pipe.realtime_pipe_reader import FFmpegRealtimePipeReader, RealtimePipeReader
 from asyncffmpeg.type_alias import StreamSpec
 
+__all__ = ["FFmpegProcess"]
+
 
 class BaseFFmpegProcess:
     """

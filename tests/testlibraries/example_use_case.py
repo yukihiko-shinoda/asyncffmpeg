@@ -3,7 +3,7 @@ from logging import getLogger
 
 from asynccpu import ProcessTaskPoolExecutor
 
-from asyncffmpeg.ffmpeg_coroutine_factory import FFmpegCoroutineFactory
+from asyncffmpeg import FFmpegCoroutineFactory
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
 
 

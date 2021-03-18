@@ -8,6 +8,9 @@ if os.name == "nt":
     from asyncffmpeg.ffmpegprocess.windows_wrapper import FFmpegProcessWindowsWrapper  # pragma: no cover
 
 
+__all__ = ["FFmpegCoroutineFactory"]
+
+
 class FFmpegCoroutineFactory:
     @staticmethod
     def create(*, time_to_force_termination: int = TIME_TO_FORCE_TERMINATION) -> FFmpegCoroutine:
