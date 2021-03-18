@@ -25,6 +25,7 @@ class FFmpegProcessWindowsWrapper(FFmpegProcess):
         argument = [
             sys.executable,
             str(Path(__file__).resolve().parent / "windows.py"),
+            str(self.time_to_force_termination),
             *ffmpeg.get_args(self.stream_spec),
         ]
         self.logger.debug(argument)
@@ -33,7 +34,7 @@ class FFmpegProcessWindowsWrapper(FFmpegProcess):
     def create_realtime_pipe_reader(self) -> RealtimePipeReader:
         return StringRealtimePipeReader(self.popen)
 
-    async def quit(self, time_to_force_termination) -> None:
+    async def quit(self, time_to_force_termination: int = None) -> None:
         self.logger.info(self.realtime_pipe_reader.read_stdout())
         self.logger.error(self.realtime_pipe_reader.read_stderr())
         self.popen.wait(time_to_force_termination)

@@ -43,7 +43,7 @@ class FFmpegCoroutine:
         """
         try:
             self.logger.debug("FFmpeg coroutine start")
-            self.ffmpeg_process = self.class_ffmpeg_process(await create_stream_spec())
+            self.ffmpeg_process = self.class_ffmpeg_process(self.time_to_force_termination, await create_stream_spec())
             self.logger.debug("Instantiate FFmpeg process finish")
             if after_start:
                 self.logger.debug("Await after_start coroutine start")

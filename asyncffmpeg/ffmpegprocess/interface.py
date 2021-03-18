@@ -4,6 +4,7 @@ import asyncio
 from abc import abstractmethod
 from logging import getLogger
 from subprocess import Popen, TimeoutExpired
+from typing import Optional
 
 from asyncffmpeg.exceptions import FFmpegProcessError
 from asyncffmpeg.pipe.realtime_pipe_reader import FFmpegRealtimePipeReader, RealtimePipeReader
@@ -18,7 +19,8 @@ class BaseFFmpegProcess:
     This is the base specification of FFmpegProcess.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, time_to_force_termination: int) -> None:
+        self.time_to_force_termination = time_to_force_termination
         self.logger = getLogger(__name__)
         self.popen = self.create_popen()
         # To prevent blocking when popen.wait() (encountered on Windows)
@@ -49,11 +51,14 @@ class BaseFFmpegProcess:
             self.logger.error("return_code = %d", return_code)
             raise FFmpegProcessError(stderr, return_code)
 
-    async def quit(self, time_to_force_termination) -> None:
+    async def quit(self, time_to_force_termination: Optional[int] = None) -> None:
         """
         Quits FFmpeg process.
         see: https://github.com/kkroening/ffmpeg-python/issues/162#issuecomment-571820244
         """
+        time_to_force_termination = (
+            time_to_force_termination if time_to_force_termination is not None else self.time_to_force_termination
+        )
         self.logger.debug("Stop FFmpeg")
         # communicate() can't work in Python 3.8 or older on Windows...
         _stdout, stderr = self.popen.communicate(str.encode("q"))  # Equivalent to send a Q
@@ -73,9 +78,9 @@ class BaseFFmpegProcess:
 class FFmpegProcess(BaseFFmpegProcess):
     """FFmpeg process interface which has constructor with stream spec argument."""
 
-    def __init__(self, stream_spec: StreamSpec) -> None:
+    def __init__(self, time_to_force_termination: int, stream_spec: StreamSpec) -> None:
         self.stream_spec = stream_spec
-        super().__init__()
+        super().__init__(time_to_force_termination)
 
     @abstractmethod
     def create_popen(self) -> Popen:

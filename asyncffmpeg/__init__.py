@@ -1,7 +1,6 @@
 """Top-level package for Asynchronous FFmpeg."""
 from typing import List
 
-from asyncffmpeg.ffmpegprocess.interface import *  # noqa
 from asyncffmpeg.exceptions import *  # noqa
 from asyncffmpeg.ffmpeg_coroutine import *  # noqa
 from asyncffmpeg.ffmpeg_coroutine_factory import *  # noqa
