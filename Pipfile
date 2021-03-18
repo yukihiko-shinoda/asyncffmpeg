@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+asynccpu = "*"
+asyncffmpeg = {path = ".", editable = true}
+bump2version = "*"
+# Hotfix for Pipenv's Bug @see https://github.com/pypa/pipenv/issues/4101
+colorama = "*"
+coverage = "*"
+flake8 = "*"
+invoke = "*"
+isort = "*"
+mypy = "*"
+pipenv-setup = "*"
+psutil = "*"
+pylint = "*"
+pytest = "*"
+pytest-resource-path = "*"
+radon = "*"
+xenon = "*"
+
+[packages]
+# To control ffmpeg by Python
+ffmpeg-python = "*"
+# To handle Ctrl + C event in Windows for graceful shutdown FFmpeg
+pywin32 = {version = "*", sys_platform = "== 'win32'"}

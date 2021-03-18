@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - main
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install ffmpeg
+      - if: matrix.os == 'windows-latest'
+        run: choco install ffmpeg
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      - run: python -m pip install pipenv
+      - run: python -m pipenv install --skip-lock --dev
+      - uses: paambaati/codeclimate-action@v2.6.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        with:
+          coverageCommand: python -m pipenv run invoke coverage --xml

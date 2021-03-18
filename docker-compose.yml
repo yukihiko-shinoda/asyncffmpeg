@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+  asyncffmpeg:
+    build:
+      context: .
+    image: mstmelody/asyncffmpeg:development
