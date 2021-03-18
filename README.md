@@ -49,8 +49,9 @@ The package [`asynccpu`] is helpful to simple implement.
 Ex:
 
 ```python
+import ffmpeg
 from asynccpu import ProcessTaskPoolExecutor
-
+from asyncffmpeg import FFmpegCoroutineFactory
 
 async def create_stream_spec_copy():
     stream = ffmpeg.input("input.mp4")
@@ -61,10 +62,13 @@ async def create_stream_spec_filter():
     stream = ffmpeg.filter(stream, "scale", 768, -1)
     return ffmpeg.output(stream, "output.mp4")
 
-ffmpeg_coroutine = FFmpegCoroutine()
+ffmpeg_coroutine = FFmpegCoroutineFactory.create()
 
 with ProcessTaskPoolExecutor(max_workers=3, cancel_tasks_when_shutdown=True) as executor:
-    awaitables = {executor.create_process_task(ffmpeg_coroutine, create_stream_spec) for create_stream_spec in [create_stream_spec_copy, create_stream_spec_filter]}
+    awaitables = {
+        executor.create_process_task(ffmpeg_coroutine, create_stream_spec)
+        for create_stream_spec in [create_stream_spec_copy, create_stream_spec_filter]
+    }
     await asyncio.gather(*awaitables)
 ```
 
@@ -92,22 +96,15 @@ See: [Answer: Python multiprocessing PicklingError: Can't pickle <type 'function
 
 ## API
 
-### FFmpegCoroutine
+### FFmpegCoroutineFactory
 
 ```python
-class FFmpegCoroutine:
-    def __init__(
-        self,
+class FFmpegCoroutineFactory:
+    @staticmethod
+    def create(
         *,
         time_to_force_termination: int = 8
-    ) -> None:
-
-    async def execute(
-        self,
-        create_stream_spec: Callable[[], Awaitable[StreamSpec]],
-        *,
-        after_start: Optional[Callable[[FFmpegProcess], Awaitable]] = None
-    ) -> None:
+    ) -> FFmpegCoroutine:
 ```
 
 #### time_to_force_termination: int = 8
@@ -117,6 +114,18 @@ when send Ctrl + C.
 At first, subprocess will try to send `q` key to FFmpeg process.
 In case when FFmpeg process doesn't stop gracefully by time limit,
 subprocess will terminate process.
+
+### FFmpegCoroutine
+
+```python
+class FFmpegCoroutine:
+    async def execute(
+        self,
+        create_stream_spec: Callable[[], Awaitable[StreamSpec]],
+        *,
+        after_start: Optional[Callable[[FFmpegProcess], Awaitable]] = None
+    ) -> None:
+```
 
 #### create_stream_spec: Callable[[], Awaitable[StreamSpec]]
 
