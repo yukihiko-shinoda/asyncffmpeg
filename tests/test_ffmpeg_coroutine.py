@@ -137,9 +137,9 @@ class TestFFmpegCoroutine:
             "" if pythonpath is None else (os.pathsep + pythonpath)
         )
         command = f"start {sys.executable} tests\\testlibraries\\subprocess_wrapper_windows.py"
-        popen = Popen(command, shell=True, env=env)
-        LocalSocket.send(str(path_file_input))
-        assert LocalSocket.receive() == "Next"
-        LocalSocket.send(str(path_file_output))
-        assert LocalSocket.receive() == "Test succeed"
-        assert popen.wait() == 0
+        with Popen(command, shell=True, env=env) as popen:
+            LocalSocket.send(str(path_file_input))
+            assert LocalSocket.receive() == "Next"
+            LocalSocket.send(str(path_file_output))
+            assert LocalSocket.receive() == "Test succeed"
+            assert popen.wait() == 0

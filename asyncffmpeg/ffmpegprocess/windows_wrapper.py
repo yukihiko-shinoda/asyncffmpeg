@@ -29,6 +29,7 @@ class FFmpegProcessWindowsWrapper(FFmpegProcess):
             *ffmpeg.get_args(self.stream_spec),
         ]
         self.logger.debug(argument)
+        # Reason: This method is instead of ffmpeg.run_async(). pylint: disable=consider-using-with
         return Popen(argument, creationflags=CREATE_NEW_PROCESS_GROUP, stdout=PIPE, stderr=PIPE)
 
     def create_realtime_pipe_reader(self) -> RealtimePipeReader:

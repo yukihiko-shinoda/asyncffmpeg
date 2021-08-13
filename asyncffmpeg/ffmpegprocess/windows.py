@@ -30,6 +30,7 @@ class FFmpegProcessWindows(BaseFFmpegProcess):
         win32api.SetConsoleCtrlHandler(self.handle, True)
 
     def create_popen(self) -> Popen:
+        # Reason: This method is instead of ffmpeg.run_async(). pylint: disable=consider-using-with
         return Popen(["ffmpeg", *self.argument], stdin=PIPE, stdout=PIPE, stderr=PIPE)
 
     def handle(self, event):
