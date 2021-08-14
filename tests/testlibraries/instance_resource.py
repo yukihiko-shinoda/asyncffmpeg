@@ -6,7 +6,7 @@ class InstanceResource:
     """This class implements fixture of instance."""
 
     REGEX_STDERR_FFMPEG_FIRSTLINE = (
-        r"ffmpeg\sversion\s\d+\.\d+\.\d+"
+        r"ffmpeg\sversion\s\d+\.\d+(\.\d+)?"
         r"(\-\d+ubuntu\d+\.\d+)?"
         r"(\-\d{4}\-\d{2}\-\d{2}(\-essentials_build-www.gyan.dev)?)?"
         r"\sCopyright\s\(c\)\s\d{4}\-\d{4}\sthe\sFFmpeg\sdevelopers"

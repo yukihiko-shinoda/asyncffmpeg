@@ -1,8 +1,12 @@
+# type: ignore
 """
 Tasks for maintaining the project.
 
 Execute 'invoke --list' for guidance on using Invoke
 """
+# Reason: invoke doesn't seem to support type hint, otherwise commands cause error:
+# ValueError: Function has keyword-only parameters or annotations,
+# use inspect.signature() API which can support them
 import platform
 import shutil
 import webbrowser
