@@ -34,20 +34,20 @@ class RealtimePipeReader:
 class StringRealtimePipeReader(RealtimePipeReader):
     """For strings."""
 
-    def __init__(self, popen: Popen):
+    def __init__(self, popen: Popen) -> None:
         super().__init__()
         assert popen.stdout is not None
         assert popen.stderr is not None
         self.pipe_manager_stdout = StringPipeManager(self.event, popen.stdout)
         self.pipe_manager_stderr = StringPipeManager(self.event, popen.stderr)
 
-    def read_stdout(self):
+    def read_stdout(self) -> str:
         return self.pipe_manager_stdout.read()
 
-    def read_stderr(self):
+    def read_stderr(self) -> str:
         return self.pipe_manager_stderr.read()
 
-    def stop(self):
+    def stop(self) -> None:
         self.event.set()
         self.pipe_manager_stdout.thread.join()
         self.pipe_manager_stderr.thread.join()

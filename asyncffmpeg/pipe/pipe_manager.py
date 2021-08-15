@@ -66,7 +66,7 @@ class BytesPipeManager(PipeManager):
 class StringPipeManager(PipeManager):
     """For strings."""
 
-    def log(self, pipe: IO):
+    def log(self, pipe: IO) -> None:
         with pipe:
             try:
                 for line in iter(pipe.readline, b""):
@@ -78,7 +78,7 @@ class StringPipeManager(PipeManager):
             except ValueError as error:  # pragma: no cover
                 self.logger.info(error, exc_info=True)
 
-    def read(self):
+    def read(self) -> str:
         """
         Vacuums stderr by get_nowait().
         see:

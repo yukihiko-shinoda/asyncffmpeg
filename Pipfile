@@ -21,6 +21,7 @@ pytest = "*"
 pytest-resource-path = "*"
 radon = "*"
 xenon = "*"
+types-psutil = "*"
 
 [packages]
 # To control ffmpeg by Python

@@ -2,7 +2,7 @@
 import sys
 
 
-def main():
+def main() -> None:
     """For testing stdout and stderr."""
     count = 0
     while True:

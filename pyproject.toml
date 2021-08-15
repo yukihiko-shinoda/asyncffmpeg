@@ -40,3 +40,16 @@ log_format = "%(asctime)s %(process)d %(levelname)s %(name)s:%(filename)s:%(line
 
 [tool.coverage.run]
 source = ["asyncffmpeg"]
+
+[tool.mypy]
+strict = true
+
+[[tool.mypy.overrides]]
+module = [
+    "ffmpeg",
+    "invoke",
+    "setuptools",
+    "win32api",
+    "win32con"
+]
+ignore_missing_imports = true

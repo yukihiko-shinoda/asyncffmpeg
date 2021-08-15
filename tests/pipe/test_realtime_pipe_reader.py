@@ -13,7 +13,7 @@ from tests.testlibraries.instance_resource import InstanceResource
 
 
 class TestStringRealtimePipeReader:
-    def test(self):
+    def test(self) -> None:
         command = [sys.executable, str(Path("tests") / "testlibraries" / "print_forever.py")]
         popen = Popen(command, stdout=PIPE, stderr=PIPE)
         realtime_pipe_reader = StringRealtimePipeReader(popen)
@@ -25,7 +25,7 @@ class TestStringRealtimePipeReader:
 
 
 class TestFFmpegRealtimePipeReader:
-    def test(self, path_file_input):
+    def test(self, path_file_input: Path) -> None:
         popen = self.create_popen(path_file_input)
         realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=(384 * 216 * 3))
         popen.wait()
@@ -36,7 +36,7 @@ class TestFFmpegRealtimePipeReader:
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is not None
 
-    def test_stop(self, path_file_input):
+    def test_stop(self, path_file_input: Path) -> None:
         popen = self.create_popen(path_file_input)
         realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=(384 * 216 * 3))
         time.sleep(SECOND_SLEEP_FOR_TEST_SHORT)
@@ -48,7 +48,7 @@ class TestFFmpegRealtimePipeReader:
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is None
 
     @staticmethod
-    def create_popen(path_file_input) -> Popen:
+    def create_popen(path_file_input: Path) -> Popen[bytes]:
         stream = ffmpeg.input(path_file_input)
         stream = ffmpeg.filter(stream, "scale", 768, -1)
         stream_spec = ffmpeg.output(stream, "pipe:", f="rawvideo").global_args("-n")
