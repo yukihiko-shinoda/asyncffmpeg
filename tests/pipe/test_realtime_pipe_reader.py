@@ -52,5 +52,5 @@ class TestFFmpegRealtimePipeReader:
         stream = ffmpeg.input(path_file_input)
         stream = ffmpeg.filter(stream, "scale", 768, -1)
         stream_spec = ffmpeg.output(stream, "pipe:", f="rawvideo").global_args("-n")
-
-        return ffmpeg.run_async(stream_spec, pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)
+        # Reason: Requires to update ffmpeg-python side.
+        return ffmpeg.run_async(stream_spec, pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)  # type: ignore

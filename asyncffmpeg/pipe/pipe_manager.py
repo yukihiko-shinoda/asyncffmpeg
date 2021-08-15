@@ -3,41 +3,41 @@ from abc import abstractmethod
 from logging import getLogger
 from queue import Queue
 from threading import Event, Thread
-from typing import IO
+from typing import IO, List, Union
 
 
 class PipeManager:
     """Logs pipe output and stores it into queue."""
 
-    def __init__(self, event: Event, pipe: IO):
+    def __init__(self, event: Event, pipe: IO[bytes]) -> None:
         self.event = event
-        self.queue: Queue = Queue()
+        self.queue: Queue[bytes] = Queue()
         self.logger = getLogger(__name__)
         self.thread = self.create_thread(pipe)
 
-    def create_thread(self, pipe: IO):
+    def create_thread(self, pipe: IO[bytes]) -> Thread:
         thread = Thread(target=self.log, args=(pipe,))
         thread.daemon = True  # thread dies with the program
         thread.start()
         return thread
 
     @abstractmethod
-    def log(self, pipe: IO):
+    def log(self, pipe: IO[bytes]) -> None:
         raise NotImplementedError()  # pragma: no cover
 
     @abstractmethod
-    def read(self):
+    def read(self) -> Union[str, List[bytes]]:
         raise NotImplementedError()  # pragma: no cover
 
 
 class BytesPipeManager(PipeManager):
     """For bytes."""
 
-    def __init__(self, event: Event, pipe: IO, frame_bytes: int):
+    def __init__(self, event: Event, pipe: IO[bytes], frame_bytes: int):
         self.frame_bytes = frame_bytes
         super().__init__(event, pipe)
 
-    def log(self, pipe: IO):
+    def log(self, pipe: IO[bytes]) -> None:
         with pipe:
             try:
                 while True:
@@ -50,7 +50,7 @@ class BytesPipeManager(PipeManager):
             except ValueError as error:  # pragma: no cover
                 self.logger.info(error, exc_info=True)
 
-    def read(self):
+    def read(self) -> List[bytes]:
         """
         Vacuums stderr by get_nowait().
         see:
@@ -66,7 +66,7 @@ class BytesPipeManager(PipeManager):
 class StringPipeManager(PipeManager):
     """For strings."""
 
-    def log(self, pipe: IO) -> None:
+    def log(self, pipe: IO[bytes]) -> None:
         with pipe:
             try:
                 for line in iter(pipe.readline, b""):

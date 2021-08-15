@@ -1,7 +1,7 @@
 """FFmpeg coroutine interface."""
 import asyncio
 from logging import getLogger
-from typing import Awaitable, Callable, Optional, Type, TypeVar
+from typing import Any, Awaitable, Callable, Optional, Type, TypeVar
 
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from asyncffmpeg.type_alias import StreamSpec
@@ -35,7 +35,7 @@ class FFmpegCoroutine:
         self,
         create_stream_spec: Callable[[], Awaitable[StreamSpec]],
         *,
-        after_start: Optional[Callable[[TypeVarFFmpegProcess], Awaitable]] = None
+        after_start: Optional[Callable[[TypeVarFFmpegProcess], Awaitable[Any]]] = None
     ) -> None:
         """
         Executes FFmpeg process.

@@ -7,7 +7,8 @@ from typing import Any, Callable
 # Reason: mypy issue: https://github.com/python/mypy/issues/10198
 from asynccpu import ProcessTaskPoolExecutor  # type: ignore
 
-from asyncffmpeg import FFmpegCoroutineFactory
+# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
+from asyncffmpeg import FFmpegCoroutineFactory  # type: ignore
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
 from tests.testlibraries.keyboardinterrupter.local_socket import LocalSocket
 

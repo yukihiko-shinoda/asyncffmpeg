@@ -11,6 +11,7 @@ from pathlib import Path
 
 # Reason: CREATE_NEW_PROCESS_GROUP is packaged only in Windows
 from subprocess import CREATE_NEW_PROCESS_GROUP, PIPE, Popen  # type: ignore
+from typing import Optional
 
 import ffmpeg
 
@@ -21,7 +22,7 @@ from asyncffmpeg.pipe.realtime_pipe_reader import RealtimePipeReader, StringReal
 class FFmpegProcessWindowsWrapper(FFmpegProcess):
     """FFmpeg process wrapping Popen object."""
 
-    def create_popen(self) -> Popen:
+    def create_popen(self) -> Popen[bytes]:
         argument = [
             sys.executable,
             str(Path(__file__).resolve().parent / "windows.py"),
@@ -35,7 +36,7 @@ class FFmpegProcessWindowsWrapper(FFmpegProcess):
     def create_realtime_pipe_reader(self) -> RealtimePipeReader:
         return StringRealtimePipeReader(self.popen)
 
-    async def quit(self, time_to_force_termination: int = None) -> None:
+    async def quit(self, time_to_force_termination: Optional[float] = None) -> None:
         self.logger.info(self.realtime_pipe_reader.read_stdout())
         self.logger.error(self.realtime_pipe_reader.read_stderr())
         self.popen.wait(time_to_force_termination)

@@ -4,7 +4,8 @@ from typing import Union
 
 import ffmpeg
 
-from asyncffmpeg import StreamSpec
+# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
+from asyncffmpeg import StreamSpec  # type: ignore
 
 
 class CreateStreamSpecCoroutineCopy:

@@ -15,7 +15,8 @@ import psutil
 import pytest
 from pytest import LogCaptureFixture
 
-from asyncffmpeg import FFmpegCoroutineFactory, FFmpegProcessError
+# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
+from asyncffmpeg import FFmpegCoroutineFactory, FFmpegProcessError  # type: ignore
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX, SECOND_SLEEP_FOR_TEST_LONG
 from tests.testlibraries.create_stream_spec_croutine import (
