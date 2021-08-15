@@ -1,7 +1,9 @@
 """FFmpeg coroutine interface."""
 import asyncio
+from asyncio.exceptions import CancelledError
 from logging import getLogger
-from typing import Any, Awaitable, Callable, Optional, Type, TypeVar
+from signal import SIGTERM, signal
+from typing import Any, Awaitable, Callable, NoReturn, Optional, Type, TypeVar
 
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from asyncffmpeg.type_alias import StreamSpec
@@ -43,6 +45,7 @@ class FFmpegCoroutine:
         """
         try:
             self.logger.debug("FFmpeg coroutine start")
+            signal(SIGTERM, self.sigterm_hander)
             self.ffmpeg_process = self.class_ffmpeg_process(self.time_to_force_termination, await create_stream_spec())
             self.logger.debug("Instantiate FFmpeg process finish")
             if after_start:
@@ -58,9 +61,14 @@ class FFmpegCoroutine:
                 self.logger.info("FFmpeg process quit start")
                 await self.ffmpeg_process.quit(self.time_to_force_termination)
                 self.logger.info("FFmpeg process quit finish")
-            raise error
+            raise
         except Exception as error:
-            self.logger.exception("%s", error)
-            raise error
+            self.logger.exception(str(error))
+            raise
         finally:
             self.logger.debug("FFmpeg coroutine finish")
+
+    # Reason: Can't collect coverage because of termination.
+    def sigterm_hander(self, _signum: int, _frame: Optional[Any]) -> NoReturn:  # pragma: no cover
+        self.logger.debug("SIGTERM handler: Start")
+        raise CancelledError()

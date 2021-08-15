@@ -172,3 +172,41 @@ class TestFFmpegCoroutine:
             LocalSocket.send(str(path_file_output))
             assert LocalSocket.receive() == "Test succeed"
             assert popen.wait() == 0
+
+    # Since Python can't trap signal.SIGTERM in Windows.
+    # see:
+    #     - Windows: signal doc should state certains signals can't be registered
+    #     https://bugs.python.org/issue26350
+    @pytest.mark.skipif(sys.platform == "win32", reason="test for Linux only")
+    def test_terminate(
+        self,
+        path_file_input: Path,
+        path_file_output: Path,
+        caplog: LogCaptureFixture,
+        caplog_workaround: Callable[[], ContextManager[None]],
+    ) -> None:
+        """FFmpeg coroutine should quit when CTRL + C in POSIX."""
+        caplog.set_level(DEBUG, logger="asynccpu.process_task_pool_executor")
+        with caplog_workaround():
+            self.terminate(path_file_input, path_file_output)
+        assert "FFmpeg process quit finish" in caplog.text
+
+    @classmethod
+    def terminate(cls, path_file_input: Path, path_file_output: Path) -> None:
+        """Test process of keyboard interrupt."""
+        process = Process(target=cls.report_raises_cencelled_error, args=(path_file_input, path_file_output))
+        process.start()
+        assert LocalSocket.receive() == "Ready"
+        time.sleep(SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX)
+        psutil_process = psutil.Process(process.pid)
+        psutil_process.terminate()
+        # Return code seems change when:
+        # run this test only: -15
+        # run all tests: 1
+        assert psutil_process.wait() in [-15, 1]
+        # Reason: Requires to enhance types-psutil
+        assert not psutil_process.is_running()  # type: ignore
+
+    @staticmethod
+    def report_raises_cencelled_error(path_file_input: Path, path_file_output: Path) -> None:
+        asyncio.run(example_use_case(path_file_input, path_file_output))
