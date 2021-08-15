@@ -7,6 +7,9 @@ name = "pypi"
 asynccpu = "*"
 asyncffmpeg = {path = ".", editable = true}
 bump2version = "*"
+# Hotfix for Requirementslib which is dependency of Pipenv
+# see: https://github.com/sarugaku/requirementslib/issues/296
+chardet = "*"
 # Hotfix for Pipenv's Bug @see https://github.com/pypa/pipenv/issues/4101
 colorama = "*"
 coverage = "*"
