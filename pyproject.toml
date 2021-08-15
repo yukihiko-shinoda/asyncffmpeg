@@ -37,3 +37,6 @@ min-public-methods = "1"
 log_cli = true
 log_cli_level = "DEBUG"
 log_format = "%(asctime)s %(process)d %(levelname)s %(name)s:%(filename)s:%(lineno)d %(message)s"
+
+[tool.coverage.run]
+source = ["asyncffmpeg"]

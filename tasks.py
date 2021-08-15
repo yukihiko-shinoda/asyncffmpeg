@@ -142,18 +142,19 @@ def coverage(context, publish=False, xml=False):
     """
     Create coverage report
     """
-    context.run("coverage run -m pytest")
-    context.run("coverage combine")
-    context.run("coverage report -m")
+    pty = platform.system() == "Linux"
+    context.run("coverage run --concurrency=multiprocessing -m pytest", pty=pty)
+    context.run("coverage combine", pty=pty)
+    context.run("coverage report -m", pty=pty)
     if publish:
         # Publish the results via coveralls
-        context.run("coveralls")
+        context.run("coveralls", pty=pty)
         return
     # Build a local report
     if xml:
-        context.run("coverage xml")
+        context.run("coverage xml", pty=pty)
     else:
-        context.run("coverage html")
+        context.run("coverage html", pty=pty)
         webbrowser.open(COVERAGE_REPORT.as_uri())
 
 
