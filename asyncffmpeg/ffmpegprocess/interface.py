@@ -33,7 +33,7 @@ class BaseFFmpegProcess:
         self.realtime_pipe_reader = self.create_realtime_pipe_reader()
 
     @abstractmethod
-    def create_popen(self) -> Popen:
+    def create_popen(self) -> Popen[bytes]:
         raise NotImplementedError()  # pragma: no cover
 
     def create_realtime_pipe_reader(self) -> RealtimePipeReader:
@@ -51,7 +51,7 @@ class BaseFFmpegProcess:
             self.logger.error("return_code = %d", return_code)
             raise FFmpegProcessError(stderr, return_code)
 
-    async def quit(self, time_to_force_termination: Optional[int] = None) -> None:
+    async def quit(self, time_to_force_termination: Optional[float] = None) -> None:
         """
         Quits FFmpeg process.
         see: https://github.com/kkroening/ffmpeg-python/issues/162#issuecomment-571820244
@@ -83,5 +83,5 @@ class FFmpegProcess(BaseFFmpegProcess):
         super().__init__(time_to_force_termination)
 
     @abstractmethod
-    def create_popen(self) -> Popen:
+    def create_popen(self) -> Popen[bytes]:
         raise NotImplementedError()  # pragma: no cover

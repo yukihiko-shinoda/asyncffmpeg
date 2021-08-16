@@ -8,16 +8,17 @@ from logging import getLogger
 from typing import Awaitable, Optional
 
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_MIDDLE
+from tests.testlibraries.types import TypeVarReturnValue
 
 
 class KeyboardInterrupter:
     """To keep task property even raise KeyboardInterrupt."""
 
-    def __init__(self, target_coroutine: Awaitable, get_process_id: Awaitable[int]) -> None:
+    def __init__(self, target_coroutine: Awaitable[TypeVarReturnValue], get_process_id: Awaitable[int]) -> None:
         # Reason: pytest bug. pylint: disable=unsubscriptable-object
         self.target_coroutine = target_coroutine
         self.get_process_id = get_process_id
-        self.task: Optional[Task] = None
+        self.task: Optional[Task[TypeVarReturnValue]] = None
         self.logger = getLogger(__name__)
 
     def test_keyboard_interrupt(self) -> None:

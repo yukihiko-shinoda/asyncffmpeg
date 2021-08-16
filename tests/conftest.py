@@ -3,6 +3,8 @@ import logging
 from contextlib import contextmanager
 from logging import handlers
 from multiprocessing import Queue
+from pathlib import Path
+from typing import Callable, ContextManager, Generator
 
 import pytest
 
@@ -10,27 +12,17 @@ collect_ignore = ["setup.py"]
 
 
 @pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-@pytest.fixture
-def path_file_input(resource_path_root):
+def path_file_input(resource_path_root: Path) -> Generator[Path, None, None]:
     yield resource_path_root / "sample.mp4"
 
 
 @pytest.fixture
-def path_file_output(tmp_path):
+def path_file_output(tmp_path: Path) -> Generator[Path, None, None]:
     yield tmp_path / "out.mp4"
 
 
 @pytest.fixture()
-def caplog_workaround():
+def caplog_workaround() -> Callable[[], ContextManager[None]]:
     """
     To capture log from subprocess.
     see:
@@ -39,8 +31,8 @@ def caplog_workaround():
     """
 
     @contextmanager
-    def ctx():
-        logger_queue = Queue()
+    def ctx() -> Generator[None, None, None]:
+        logger_queue: "Queue[logging.LogRecord]" = Queue()
         logger = logging.getLogger()
         queue_handler = handlers.QueueHandler(logger_queue)
         logger.addHandler(queue_handler)

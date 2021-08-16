@@ -1,8 +1,9 @@
 """Type alias."""
-from typing import Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
-from ffmpeg.nodes import Stream
+# Reason: Maybe, requires to update ffmpeg-python side.
+from ffmpeg.nodes import Stream  # type: ignore
 
 __all__ = ["StreamSpec"]
 
-StreamSpec = Union[None, Stream, List, Tuple, Dict]
+StreamSpec = Union[None, Stream, List, Tuple[Any], Dict]
