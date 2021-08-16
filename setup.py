@@ -58,6 +58,6 @@ setup(
     test_suite="tests",
     tests_require=["pytest>=3"],
     url="https://github.com/yukihiko-shinoda/asyncffmpeg",
-    version="1.0.1",
+    version="1.1.0",
     zip_safe=False,
 )
