@@ -3,6 +3,7 @@ import asyncio
 import os
 import shutil
 import signal
+import subprocess
 import sys
 import time
 from logging import DEBUG
@@ -210,3 +211,9 @@ class TestFFmpegCoroutine:
     @staticmethod
     def report_raises_cencelled_error(path_file_input: Path, path_file_output: Path) -> None:
         asyncio.run(example_use_case(path_file_input, path_file_output))
+
+    @staticmethod
+    def test_example_readme(code_and_environment_example: Path) -> None:
+        subprocess.run([f"{sys.executable}", f"{code_and_environment_example}"], check=True)
+        for index in [1, 2]:
+            assert (code_and_environment_example.parent / f"output{index}.mp4").exists()
