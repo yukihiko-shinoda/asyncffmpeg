@@ -49,11 +49,9 @@ The package [`asynccpu`] is helpful to simple implement.
 Ex:
 
 ```python
-from asyncffmpeg.type_alias import StreamSpec
-from asyncffmpeg import FFmpegCoroutineFactory, StreamSpec
-
 import ffmpeg
 from asynccpu import ProcessTaskPoolExecutor
+from asyncffmpeg import FFmpegCoroutineFactory, StreamSpec
 
 
 async def create_stream_spec_copy() -> StreamSpec:
