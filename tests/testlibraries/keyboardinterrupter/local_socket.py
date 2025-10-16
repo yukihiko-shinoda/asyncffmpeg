@@ -1,4 +1,5 @@
 """The socket to comunicate processes of different group each other."""
+
 import socket
 from contextlib import closing
 

@@ -1,48 +1,67 @@
+"""Test for asyncffmpeg.pipe.realtime_pipe_reader."""
+
 import os
 import re
 import sys
 import time
 from pathlib import Path
-from subprocess import PIPE, Popen
+
+# Reason: This package requires to use subprocess.
+from subprocess import PIPE  # nosec
+from subprocess import Popen  # nosec
 
 import ffmpeg
 
-from asyncffmpeg.pipe.realtime_pipe_reader import FFmpegRealtimePipeReader, StringRealtimePipeReader
-from tests.testlibraries import SECOND_SLEEP_FOR_TEST_LONG, SECOND_SLEEP_FOR_TEST_SHORT
+from asyncffmpeg.pipe.realtime_pipe_reader import FFmpegRealtimePipeReader
+from asyncffmpeg.pipe.realtime_pipe_reader import StringRealtimePipeReader
+from tests.testlibraries import SECOND_SLEEP_FOR_TEST_LONG
+from tests.testlibraries import SECOND_SLEEP_FOR_TEST_SHORT
 from tests.testlibraries.instance_resource import InstanceResource
 
 
 class TestStringRealtimePipeReader:
+    """Tests for StringRealtimePipeReader."""
+
     def test(self) -> None:
+        """Test that realtime pipe reader can read stdout and stderr continuously."""
         command = [sys.executable, str(Path("tests") / "testlibraries" / "print_forever.py")]
-        popen = Popen(command, stdout=PIPE, stderr=PIPE)
-        realtime_pipe_reader = StringRealtimePipeReader(popen)
-        time.sleep(SECOND_SLEEP_FOR_TEST_LONG)
-        realtime_pipe_reader.stop()
-        assert f"stderr{os.linesep}" * 10 in realtime_pipe_reader.read_stderr()
-        assert f"stdout{os.linesep}" * 10 in realtime_pipe_reader.read_stdout()
-        popen.terminate()
+        # Reason: This only executes test code.
+        with Popen(command, stdout=PIPE, stderr=PIPE) as popen:  # noqa: S603  # nosec
+            realtime_pipe_reader = StringRealtimePipeReader(popen)
+            time.sleep(SECOND_SLEEP_FOR_TEST_LONG)
+            realtime_pipe_reader.stop()
+            assert f"stderr{os.linesep}" * 10 in realtime_pipe_reader.read_stderr()
+            assert f"stdout{os.linesep}" * 10 in realtime_pipe_reader.read_stdout()
+            popen.terminate()
 
 
 class TestFFmpegRealtimePipeReader:
+    """Tests for FFmpegRealtimePipeReader."""
+
     def test(self, path_file_input: Path) -> None:
+        """Test that FFmpeg realtime pipe reader can read frame bytes from stdout."""
+        expected_frame_bytes_minimum = 700
+        expected_frame_bytes_maximum = 1100
         popen = self.create_popen(path_file_input)
-        realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=(384 * 216 * 3))
+        realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=384 * 216 * 3)
         popen.wait()
         realtime_pipe_reader.stop()
         list_frame_bytes = realtime_pipe_reader.read_stdout()
-        assert 700 < len(list_frame_bytes) <= 1100
+        assert expected_frame_bytes_minimum < len(list_frame_bytes) <= expected_frame_bytes_maximum
         stderr = realtime_pipe_reader.read_stderr()
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is not None
 
     def test_stop(self, path_file_input: Path) -> None:
+        """Test that FFmpeg realtime pipe reader can be stopped early."""
+        expected_frame_bytes_minimum = 0
+        expected_frame_bytes_maximum = 700
         popen = self.create_popen(path_file_input)
-        realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=(384 * 216 * 3))
+        realtime_pipe_reader = FFmpegRealtimePipeReader(popen, frame_bytes=384 * 216 * 3)
         time.sleep(SECOND_SLEEP_FOR_TEST_SHORT)
         realtime_pipe_reader.stop()
         list_frame_bytes = realtime_pipe_reader.read_stdout()
-        assert 0 < len(list_frame_bytes) <= 700
+        assert expected_frame_bytes_minimum < len(list_frame_bytes) <= expected_frame_bytes_maximum
         stderr = realtime_pipe_reader.read_stderr()
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is None
@@ -53,4 +72,4 @@ class TestFFmpegRealtimePipeReader:
         stream = ffmpeg.filter(stream, "scale", 768, -1)
         stream_spec = ffmpeg.output(stream, "pipe:", f="rawvideo").global_args("-n")
         # Reason: Requires to update ffmpeg-python side.
-        return ffmpeg.run_async(stream_spec, pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)  # type: ignore
+        return ffmpeg.run_async(stream_spec, pipe_stdin=True, pipe_stdout=True, pipe_stderr=True)  # type: ignore[no-any-return]

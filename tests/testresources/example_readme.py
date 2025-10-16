@@ -1,12 +1,12 @@
+"""Example of README.md."""
+
 import asyncio
 
 import ffmpeg
+from asynccpu import ProcessTaskPoolExecutor
 
-# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
-from asynccpu import ProcessTaskPoolExecutor  # type: ignore
-
-# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
-from asyncffmpeg import FFmpegCoroutineFactory, StreamSpec  # type: ignore
+from asyncffmpeg import FFmpegCoroutineFactory
+from asyncffmpeg import StreamSpec
 
 
 async def create_stream_spec_copy() -> StreamSpec:
@@ -21,6 +21,7 @@ async def create_stream_spec_filter() -> StreamSpec:
 
 
 async def main() -> None:
+    """Main function demonstrating concurrent FFmpeg operations."""
     ffmpeg_coroutine = FFmpegCoroutineFactory.create()
 
     with ProcessTaskPoolExecutor(max_workers=3, cancel_tasks_when_shutdown=True) as executor:
