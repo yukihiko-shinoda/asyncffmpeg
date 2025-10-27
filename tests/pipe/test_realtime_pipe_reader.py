@@ -9,8 +9,10 @@ from pathlib import Path
 # Reason: This package requires to use subprocess.
 from subprocess import PIPE  # nosec
 from subprocess import Popen  # nosec
+from unittest.mock import MagicMock
 
 import ffmpeg
+import pytest
 
 from asyncffmpeg.pipe.realtime_pipe_reader import FFmpegRealtimePipeReader
 from asyncffmpeg.pipe.realtime_pipe_reader import StringRealtimePipeReader
@@ -33,6 +35,22 @@ class TestStringRealtimePipeReader:
             assert f"stderr{os.linesep}" * 10 in realtime_pipe_reader.read_stderr()
             assert f"stdout{os.linesep}" * 10 in realtime_pipe_reader.read_stdout()
             popen.terminate()
+
+    def test_stdout_none(self) -> None:
+        """Test that ValueError is raised when popen.stdout is None."""
+        popen_mock = MagicMock()
+        popen_mock.stdout = None
+        popen_mock.stderr = MagicMock()
+        with pytest.raises(ValueError, match=r"popen\.stdout is None"):
+            StringRealtimePipeReader(popen_mock)
+
+    def test_stderr_none(self) -> None:
+        """Test that ValueError is raised when popen.stderr is None."""
+        popen_mock = MagicMock()
+        popen_mock.stdout = MagicMock()
+        popen_mock.stderr = None
+        with pytest.raises(ValueError, match=r"popen\.stderr is None"):
+            StringRealtimePipeReader(popen_mock)
 
 
 class TestFFmpegRealtimePipeReader:
@@ -65,6 +83,22 @@ class TestFFmpegRealtimePipeReader:
         stderr = realtime_pipe_reader.read_stderr()
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
         assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is None
+
+    def test_stdout_none(self) -> None:
+        """Test that ValueError is raised when popen.stdout is None."""
+        popen_mock = MagicMock()
+        popen_mock.stdout = None
+        popen_mock.stderr = MagicMock()
+        with pytest.raises(ValueError, match=r"popen\.stdout is None"):
+            FFmpegRealtimePipeReader(popen_mock, frame_bytes=1024)
+
+    def test_stderr_none(self) -> None:
+        """Test that ValueError is raised when popen.stderr is None."""
+        popen_mock = MagicMock()
+        popen_mock.stdout = MagicMock()
+        popen_mock.stderr = None
+        with pytest.raises(ValueError, match=r"popen\.stderr is None"):
+            FFmpegRealtimePipeReader(popen_mock, frame_bytes=1024)
 
     @staticmethod
     def create_popen(path_file_input: Path) -> Popen[bytes]:

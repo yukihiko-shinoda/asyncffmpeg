@@ -152,7 +152,7 @@ exclude_also = [
 
 [tool.coverage.run]
 # Some test requires following settings to correct coverage since they are using subprocess
-concurrency = ["multiprocessing"]
+concurrency = ["multiprocessing", "thread"]
 # To attempts to save coverage data even when a process is terminated by a SIGTERM signal
 sigterm = true
 # To remap paths when coverage combines data files:
