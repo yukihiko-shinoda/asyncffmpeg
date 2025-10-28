@@ -8,7 +8,7 @@ from asyncffmpeg.type_alias import *  # noqa: F403
 
 __author__ = """Yukihiko Shinoda"""
 __email__ = "yuk.hik.future@gmail.com"
-__version__ = "1.2.0"
+__version__ = "1.3.0"
 
 __all__: list[str] = []
 __all__ += exceptions.__all__  # type: ignore[name-defined]  # noqa: F405 pylint: disable=undefined-variable
