@@ -29,9 +29,9 @@ class FFmpegProcessWindows(BaseFFmpegProcess):
         self.argument = argument
         basicConfig(stream=sys.stdout, level=DEBUG)
         super().__init__(time_to_force_termination)
-        # Reason:
-        win32api.SetConsoleCtrlHandler(None, badd=False)
-        win32api.SetConsoleCtrlHandler(self.handle, badd=True)
+        # Reason: SetConsoleCtrlHandler requires positional bool arguments, no keyword args supported
+        win32api.SetConsoleCtrlHandler(None, False)  # noqa: FBT003
+        win32api.SetConsoleCtrlHandler(self.handle, True)  # noqa: FBT003
 
     def create_popen(self) -> Popen[bytes]:
         # Reason:
