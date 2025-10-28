@@ -3,16 +3,7 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-      - run: python -m pip install pipenv
-      - run: python -m pipenv install --skip-lock --dev
-      - run: python -m pipenv run invoke dist
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
-        with:
-          password: ${{ secrets.pypi_password }}
+  call-workflow:
+    uses: yukihiko-shinoda/invoke-lint/.github/workflows/reusable-deploy.yml@main
+    secrets:
+      pypi_password: ${{ secrets.pypi_password }}

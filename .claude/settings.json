@@ -1,0 +1,51 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run invoke lint"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(uv run invoke clean:*)",
+      "Bash(uv run invoke clean.dist:*)",
+      "Bash(uv run invoke clean.python:*)",
+      "Bash(uv run invoke clean.tests:*)",
+      "Bash(uv run invoke dist:*)",
+      "Bash(uv run invoke lint.bandit:*)",
+      "Bash(uv run invoke lint.cohesion:*)",
+      "Bash(uv run invoke lint.deep:*)",
+      "Bash(uv run invoke lint.dodgy:*)",
+      "Bash(uv run invoke lint:*)",
+      "Bash(uv run invoke lint.flake8:*)",
+      "Bash(uv run invoke lint.mypy:*)",
+      "Bash(uv run invoke lint.pydocstyle:*)",
+      "Bash(uv run invoke lint.pylint:*)",
+      "Bash(uv run invoke lint.radon:*)",
+      "Bash(uv run invoke lint.radon-cc:*)",
+      "Bash(uv run invoke lint.radon-mi:*)",
+      "Bash(uv run invoke lint.ruff:*)",
+      "Bash(uv run invoke lint.semgrep:*)",
+      "Bash(uv run invoke lint.xenon:*)",
+      "Bash(uv run invoke path:*)",
+      "Bash(uv run invoke style:*)",
+      "Bash(uv run invoke test.all:*)",
+      "Bash(uv run invoke test.coverage:*)",
+      "Bash(uv run invoke test:*)",
+      "Edit(asyncffmpeg/**)",
+      "Edit(tests/**)"
+    ],
+    "deny": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(rm:*)"
+    ]
+  }
+}
