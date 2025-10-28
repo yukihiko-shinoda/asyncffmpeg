@@ -1,6 +1,7 @@
 """The socket to comunicate processes of different group each other."""
 
 import socket
+import time
 from contextlib import closing
 
 from tests.testlibraries.keyboardinterrupter import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POPEN_MIDDLE
@@ -21,10 +22,29 @@ class LocalSocket:
     SOCKET_REUSE_ADDRESS_ENABLE = 1
 
     @staticmethod
-    def send(message: str) -> None:
-        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as socket_from:
-            socket_from.connect((LocalSocket.HOST, LocalSocket.PORT))
-            socket_from.send(bytes(message, LocalSocket.ENCODING))
+    def send(message: str, max_retries: int = 30, retry_delay: float = 0.5) -> None:
+        """Send message with retry logic for connection failures.
+
+        Args:
+            message: The message to send
+            max_retries: Maximum number of connection attempts (default: 30)
+            retry_delay: Delay in seconds between retries (default: 0.5)
+        """
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as socket_from:
+                    socket_from.connect((LocalSocket.HOST, LocalSocket.PORT))
+                    socket_from.send(bytes(message, LocalSocket.ENCODING))
+                    return  # Success, exit the function
+            except OSError as e:  # noqa: PERF203
+                last_error = e
+                if attempt < max_retries - 1:  # Don't sleep on the last attempt
+                    time.sleep(retry_delay)
+
+        # If we get here, all retries failed
+        if last_error:
+            raise last_error
 
     @staticmethod
     def receive() -> str:
