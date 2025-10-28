@@ -7,7 +7,31 @@ on:
     branches:
       - main
 jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: [ '3.13', '3.12', '3.11', '3.10', '3.9' ]
+      fail-fast: false
+    steps:
+      - if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install ffmpeg
+      - if: matrix.os == 'windows-latest'
+        run: choco install ffmpeg
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync
+      # Invoke currently seems not support PowerShell,
+      # production code of this package doesn't depends on cmd, however test depends on cmd.
+      # - GitHub Actions default shell on Windows runners is changing to PowerShell | GitHub Changelog
+      #   https://github.blog/changelog/2019-10-17-github-actions-default-shell-on-windows-runners-is-changing-to-powershell/
+      - if: runner.os == 'Windows'
+        run: uv run invoke test.all
+        shell: cmd
+      - if: runner.os == 'Linux'
+        run: uv run invoke test.all
   call-workflow:
-    uses: yukihiko-shinoda/invoke-lint/.github/workflows/reusable-test.yml@main
-    with:
-      support-python-versions: "[ '3.13', '3.12', '3.11', '3.10', '3.9' ]"
+    uses: yukihiko-shinoda/invoke-lint/.github/workflows/reusable-lint.yml@main
