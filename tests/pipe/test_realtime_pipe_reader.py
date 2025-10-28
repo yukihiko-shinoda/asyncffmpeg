@@ -67,8 +67,8 @@ class TestFFmpegRealtimePipeReader:
         list_frame_bytes = realtime_pipe_reader.read_stdout()
         assert expected_frame_bytes_minimum < len(list_frame_bytes) <= expected_frame_bytes_maximum
         stderr = realtime_pipe_reader.read_stderr()
-        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
-        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is not None
+        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRST_LINE, stderr) is not None
+        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LAST_LINE, stderr) is not None
 
     def test_stop(self, path_file_input: Path) -> None:
         """Test that FFmpeg realtime pipe reader can be stopped early."""
@@ -81,8 +81,8 @@ class TestFFmpegRealtimePipeReader:
         list_frame_bytes = realtime_pipe_reader.read_stdout()
         assert expected_frame_bytes_minimum < len(list_frame_bytes) <= expected_frame_bytes_maximum
         stderr = realtime_pipe_reader.read_stderr()
-        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRSTLINE, stderr) is not None
-        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, stderr) is None
+        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_FIRST_LINE, stderr) is not None
+        assert re.search(InstanceResource.REGEX_STDERR_FFMPEG_LAST_LINE, stderr) is None
 
     def test_stdout_none(self) -> None:
         """Test that ValueError is raised when popen.stdout is None."""

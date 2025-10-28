@@ -69,7 +69,7 @@ class Checker:
             self.ffmpeg_process_quit_finish = True
         if (
             re.search(
-                InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE,
+                InstanceResource.REGEX_STDERR_FFMPEG_LAST_LINE,
                 log_record.message,
             )
             is not None
