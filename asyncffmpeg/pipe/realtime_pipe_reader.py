@@ -1,15 +1,22 @@
-"""
-To realize non-blocking read.
+"""To realize non-blocking read.
+
 see:
     - Answer: A non-blocking read on a subprocess.PIPE in Python - Stack Overflow
     https://stackoverflow.com/a/4896288/12721873
 """
-from abc import abstractmethod
-from subprocess import Popen
-from threading import Event
-from typing import List, Optional, Union
 
-from asyncffmpeg.pipe.pipe_manager import BytesPipeManager, StringPipeManager
+from __future__ import annotations
+
+from abc import abstractmethod
+from threading import Event
+from typing import TYPE_CHECKING
+
+from asyncffmpeg.pipe.pipe_manager import BytesPipeManager
+from asyncffmpeg.pipe.pipe_manager import StringPipeManager
+
+if TYPE_CHECKING:
+    # Reason: This package requires to use subprocess.
+    from subprocess import Popen  # nosec
 
 
 class RealtimePipeReader:
@@ -19,16 +26,16 @@ class RealtimePipeReader:
         self.event = Event()
 
     @abstractmethod
-    def read_stdout(self) -> Union[str, List[bytes]]:
-        raise NotImplementedError()  # pragma: no cover
+    def read_stdout(self) -> str | list[bytes]:
+        raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def read_stderr(self) -> str:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
     def stop(self) -> None:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
 
 class StringRealtimePipeReader(RealtimePipeReader):
@@ -36,8 +43,12 @@ class StringRealtimePipeReader(RealtimePipeReader):
 
     def __init__(self, popen: Popen[bytes]) -> None:
         super().__init__()
-        assert popen.stdout is not None
-        assert popen.stderr is not None
+        if not popen.stdout:
+            msg = "popen.stdout is None"
+            raise ValueError(msg)
+        if not popen.stderr:
+            msg = "popen.stderr is None"
+            raise ValueError(msg)
         self.pipe_manager_stdout = StringPipeManager(self.event, popen.stdout)
         self.pipe_manager_stderr = StringPipeManager(self.event, popen.stderr)
 
@@ -56,18 +67,22 @@ class StringRealtimePipeReader(RealtimePipeReader):
 class FFmpegRealtimePipeReader(RealtimePipeReader):
     """For FFmpeg."""
 
-    def __init__(self, popen: Popen[bytes], *, frame_bytes: Optional[int] = None):
+    def __init__(self, popen: Popen[bytes], *, frame_bytes: int | None = None) -> None:
         super().__init__()
-        assert popen.stdout is not None
-        assert popen.stderr is not None
+        if not popen.stdout:
+            msg = "popen.stdout is None"
+            raise ValueError(msg)
+        if not popen.stderr:
+            msg = "popen.stderr is None"
+            raise ValueError(msg)
         self.pipe_manager_stderr = StringPipeManager(self.event, popen.stderr)
         self.pipe_manager_stdout = (
             None if frame_bytes is None else BytesPipeManager(self.event, popen.stdout, frame_bytes)
         )
 
-    def read_stdout(self) -> List[bytes]:
+    def read_stdout(self) -> list[bytes]:
         # Reason: omit if statement for excluding None for performance.
-        return self.pipe_manager_stdout.read()  # type: ignore
+        return self.pipe_manager_stdout.read()  # type: ignore[union-attr]
 
     def read_stderr(self) -> str:
         return self.pipe_manager_stderr.read()

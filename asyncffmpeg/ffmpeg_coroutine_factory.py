@@ -1,7 +1,10 @@
 """FFmpeg coroutine Factory."""
+
 import os
 
-from asyncffmpeg.ffmpeg_coroutine import TIME_TO_FORCE_TERMINATION, FFmpegCoroutine
+from asyncffmpeg.ffmpeg_coroutine import TIME_TO_FORCE_TERMINATION
+from asyncffmpeg.ffmpeg_coroutine import FFmpegCoroutine
+from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from asyncffmpeg.ffmpegprocess.posix import FFmpegProcessPosix
 
 if os.name == "nt":
@@ -13,7 +16,7 @@ __all__ = ["FFmpegCoroutineFactory"]
 
 class FFmpegCoroutineFactory:
     @staticmethod
-    def create(*, time_to_force_termination: int = TIME_TO_FORCE_TERMINATION) -> FFmpegCoroutine:
+    def create(*, time_to_force_termination: int = TIME_TO_FORCE_TERMINATION) -> FFmpegCoroutine[FFmpegProcess]:
         return (
             FFmpegCoroutine(FFmpegProcessWindowsWrapper, time_to_force_termination=time_to_force_termination)
             if os.name == "nt"

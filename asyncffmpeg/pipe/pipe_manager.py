@@ -1,9 +1,13 @@
 """Logs pipe output and stores it into queue."""
+
+from __future__ import annotations
+
 from abc import abstractmethod
 from logging import getLogger
 from queue import Queue
-from threading import Event, Thread
-from typing import IO, List, Union
+from threading import Event
+from threading import Thread
+from typing import IO
 
 
 class PipeManager:
@@ -23,17 +27,17 @@ class PipeManager:
 
     @abstractmethod
     def log(self, pipe: IO[bytes]) -> None:
-        raise NotImplementedError()  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     @abstractmethod
-    def read(self) -> Union[str, List[bytes]]:
-        raise NotImplementedError()  # pragma: no cover
+    def read(self) -> str | list[bytes]:
+        raise NotImplementedError  # pragma: no cover
 
 
 class BytesPipeManager(PipeManager):
     """For bytes."""
 
-    def __init__(self, event: Event, pipe: IO[bytes], frame_bytes: int):
+    def __init__(self, event: Event, pipe: IO[bytes], frame_bytes: int) -> None:
         self.frame_bytes = frame_bytes
         super().__init__(event, pipe)
 
@@ -50,9 +54,9 @@ class BytesPipeManager(PipeManager):
             except ValueError as error:  # pragma: no cover
                 self.logger.info(error, exc_info=True)
 
-    def read(self) -> List[bytes]:
-        """
-        Vacuums stderr by get_nowait().
+    def read(self) -> list[bytes]:
+        """Vacuums stderr by get_nowait().
+
         see:
           - Answer: A non-blocking read on a subprocess.PIPE in Python - Stack Overflow
             https://stackoverflow.com/a/4896288/12721873
@@ -79,8 +83,8 @@ class StringPipeManager(PipeManager):
                 self.logger.info(error, exc_info=True)
 
     def read(self) -> str:
-        """
-        Vacuums stderr by get_nowait().
+        """Vacuums stderr by get_nowait().
+
         see:
           - Answer: A non-blocking read on a subprocess.PIPE in Python - Stack Overflow
             https://stackoverflow.com/a/4896288/12721873

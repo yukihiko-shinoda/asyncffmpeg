@@ -1,4 +1,5 @@
 """Subprocess wrapper for Windows."""
+
 import asyncio
 import logging
 import os
@@ -6,7 +7,11 @@ import queue
 import re
 import sys
 import time
-from logging import DEBUG, LogRecord, basicConfig, getLogger, handlers
+from logging import DEBUG
+from logging import LogRecord
+from logging import basicConfig
+from logging import getLogger
+from logging import handlers
 from multiprocessing import Manager
 
 import psutil
@@ -26,11 +31,13 @@ async def get_process_id() -> int:
     # Wait for starting subprocess
     # otherwise, time.sleep() will block starting subprocess.
     current_process = psutil.Process(os.getpid())
-    while len(current_process.children()) < 2:
+    length_children_has_one_in_windows = 2  # From investigation result
+    while len(current_process.children()) < length_children_has_one_in_windows:
         print(len(current_process.children()))
         await asyncio.sleep(0.01)
     logger.debug("Start sleep")
-    time.sleep(SECOND_SLEEP_FOR_TEST_LONG)
+    # To block this process until KeyboardInterrupt is sent
+    time.sleep(SECOND_SLEEP_FOR_TEST_LONG)  # noqa: ASYNC251
     print("Kill all processes in this window.")
     return 0
 
@@ -60,7 +67,13 @@ class Checker:
         self.logger.handle(log_record)
         if "FFmpeg process quit finish" in log_record.message:
             self.ffmpeg_process_quit_finish = True
-        if re.search(InstanceResource.REGEX_STDERR_FFMPEG_LASTLINE, log_record.message,) is not None:
+        if (
+            re.search(
+                InstanceResource.REGEX_STDERR_FFMPEG_LAST_LINE,
+                log_record.message,
+            )
+            is not None
+        ):
             self.ffmpeg_closed_log = True
 
 

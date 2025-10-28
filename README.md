@@ -1,12 +1,12 @@
 # Asynchronous FFmpeg
 
 [![Test](https://github.com/yukihiko-shinoda/asyncffmpeg/workflows/Test/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions?query=workflow%3ATest)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d0715bdfc5dd7725e0a2/test_coverage)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/d0715bdfc5dd7725e0a2/maintainability)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg/maintainability)
-[![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/yukihiko-shinoda/asyncffmpeg)](https://codeclimate.com/github/yukihiko-shinoda/asyncffmpeg)
-[![Updates](https://pyup.io/repos/github/yukihiko-shinoda/asyncffmpeg/shield.svg)](https://pyup.io/repos/github/yukihiko-shinoda/asyncffmpeg/)
+[![CodeQL](https://github.com/yukihiko-shinoda/asyncffmpeg/workflows/CodeQL/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions?query=workflow%3ACodeQL)
+[![Code Coverage](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg/coverage.svg)](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg)
+[![Maintainability](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg/maintainability.svg)](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg)
+[![Dependabot](https://flat.badgen.net/github/dependabot/yukihiko-shinoda/asyncffmpeg?icon=dependabot)](https://github.com/yukihiko-shinoda/asyncffmpeg/security/dependabot)
 [![Python versions](https://img.shields.io/pypi/pyversions/asyncffmpeg.svg)](https://pypi.org/project/asyncffmpeg)
-[![Twitter URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fyukihiko-shinoda%2Fasyncffmpeg)](http://twitter.com/share?text=Asynchronous%20FFmpeg&url=https://pypi.org/project/asyncffmpeg/&hashtags=python)
+[![X URL](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fyukihiko-shinoda%2Fasyncffmpeg)](https://x.com/intent/post?text=Asynchronous%20FFmpeg&url=https%3A%2F%2Fpypi.org%2Fproject%2Fasyncffmpeg%2F&hashtags=python)
 
 Supports async / await pattern for FFmpeg operations.
 

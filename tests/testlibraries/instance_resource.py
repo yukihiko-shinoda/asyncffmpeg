@@ -7,18 +7,23 @@ class InstanceResource:
 
     # Samples:
     # Debian buster:
-    #   "ffmpeg version 4.1.6 Copyright (c) 2000-2020 the FFmpeg developers"
+    #   "ffmpeg version 4.1.6 Copyright (c) 2000-2020 the FFmpeg developers"  # noqa: ERA001
     # Ubuntu 20.04 FFmpeg 4.4:
-    #   "ffmpeg version 4.4 Copyright (c) 2000-2021 the FFmpeg developers"
+    #   "ffmpeg version 4.4 Copyright (c) 2000-2021 the FFmpeg developers"  # noqa: ERA001
+    # Ubuntu 24.04 FFmpeg 6.1:
+    #   "ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers"  # noqa: ERA001
     # Windows 10 FFmpeg 4.4:
-    #   "ffmpeg version 4.4-essentials_build-www.gyan.dev Copyright (c) 2000-2021 the FFmpeg developers"
-    REGEX_STDERR_FFMPEG_FIRSTLINE = (
+    #   "ffmpeg version 4.4-essentials_build-www.gyan.dev Copyright (c) 2000-2021 the FFmpeg developers"  # noqa: ERA001
+    # Debian 13 FFmpeg 7.1:
+    #   "ffmpeg version 7.1.2-0+deb13u1 Copyright (c) 2000-2025 the FFmpeg developers"  # noqa: ERA001
+    REGEX_STDERR_FFMPEG_FIRST_LINE = (
         r"ffmpeg\sversion\s\d+\.\d+(\.\d+)?"
-        r"(\-\d+ubuntu\d+\.\d+)?"
+        r"(\-\d+ubuntu\d+(\.\d+)?)?"
+        r"(\-\d+\+deb\d+u\d+)?"
         r"((\-\d{4}\-\d{2}(\-\d{2}?)?)?(\-essentials_build\-www\.gyan\.dev)?)?"
         r"\sCopyright\s\(c\)\s\d{4}\-\d{4}\sthe\sFFmpeg\sdevelopers"
     )
-    REGEX_STDERR_FFMPEG_LASTLINE = (
-        r"video:\d+kB\saudio:\d+kB\ssubtitle:\d+kB\sother\sstreams:\d+kB\sglobal\sheaders:\d+kB"
+    REGEX_STDERR_FFMPEG_LAST_LINE = (
+        r"video:\d+(kB|KiB)\saudio:\d+(kB|KiB)\ssubtitle:\d+(kB|KiB)\sother\sstreams:\d+(kB|KiB)\sglobal\sheaders:\d+(kB|KiB)"
         r"\smuxing\soverhead:\s(\d*[.])?\d+%"
     )

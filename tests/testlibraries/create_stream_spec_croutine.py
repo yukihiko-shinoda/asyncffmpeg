@@ -1,11 +1,15 @@
 """Coroutines for creating stream spec."""
-from pathlib import Path
-from typing import Union
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import ffmpeg
 
-# Reason: Following export method in __init__.py from Effective Python 2nd Edition item 85
-from asyncffmpeg import StreamSpec  # type: ignore
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from asyncffmpeg import StreamSpec
 
 
 class CreateStreamSpecCoroutineCopy:
@@ -23,7 +27,7 @@ class CreateStreamSpecCoroutineCopy:
 class CreateStreamSpecCoroutineFilter:
     """Coroutine to create stream spec to filter."""
 
-    def __init__(self, path_file_input: Union[Path, str], path_file_output: Union[Path, str]) -> None:
+    def __init__(self, path_file_input: Path | str, path_file_output: Path | str) -> None:
         self.path_file_input = path_file_input
         self.path_file_output = path_file_output
 
