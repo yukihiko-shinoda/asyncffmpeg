@@ -1,6 +1,9 @@
 """Example of README.md."""
 
+from __future__ import annotations
+
 import asyncio
+from typing import Any
 
 import ffmpeg
 from asynccpu import ProcessTaskPoolExecutor
@@ -25,7 +28,7 @@ async def main() -> None:
     ffmpeg_coroutine = FFmpegCoroutineFactory.create()
 
     with ProcessTaskPoolExecutor(max_workers=3, cancel_tasks_when_shutdown=True) as executor:
-        awaitables = (
+        awaitables: tuple[Any, ...] = tuple(
             executor.create_process_task(ffmpeg_coroutine.execute, create_stream_spec)
             for create_stream_spec in [create_stream_spec_copy, create_stream_spec_filter]
         )

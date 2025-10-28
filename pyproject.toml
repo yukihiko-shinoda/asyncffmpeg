@@ -51,6 +51,8 @@ dev = [
     "radon<6.0.0",
     "ruff",
     "semgrep",
+    # To use ParamSpec
+    "typing-extensions; python_version <= '3.9'",
     "types-invoke",
     "types-psutil",
     "xenon",

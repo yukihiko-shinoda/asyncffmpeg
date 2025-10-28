@@ -1,10 +1,11 @@
 """To keep task property even raise KeyboardInterrupt."""
 
+from __future__ import annotations
+
 import asyncio
 import os
 import signal
 import time
-from collections.abc import Coroutine
 from logging import getLogger
 from typing import TYPE_CHECKING
 from typing import Any
@@ -15,6 +16,7 @@ from tests.testlibraries.types import TypeVarReturnValue
 
 if TYPE_CHECKING:
     from asyncio.tasks import Task
+    from collections.abc import Coroutine
 
 
 class KeyboardInterrupter(Generic[TypeVarReturnValue]):
