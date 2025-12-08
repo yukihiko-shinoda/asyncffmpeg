@@ -14,5 +14,5 @@ class FFmpegProcessError(Error):
     """FFmpeg process failed."""
 
     def __init__(self, message: str, exit_code: int) -> None:
-        super().__init__(message)
+        super().__init__(message, exit_code)
         self.exit_code = exit_code
