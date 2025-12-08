@@ -25,7 +25,6 @@ from asyncffmpeg import FFmpegCoroutineFactory
 from asyncffmpeg import FFmpegProcessError
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX
-from tests.testlibraries import SECOND_SLEEP_FOR_TEST_LONG
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineCopy
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
 from tests.testlibraries.example_use_case import example_use_case
@@ -141,7 +140,7 @@ class TestFFmpegCoroutine:
             CreateStreamSpecCoroutineFilter(path_file_input, path_file_output).create,
         )
         process_pool_executor_simulator.process.start()
-        await asyncio.sleep(SECOND_SLEEP_FOR_TEST_LONG)
+        await asyncio.sleep(SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX)
         cls.simulate_ctrl_c_in_posix(process_pool_executor_simulator.process)
         process_pool_executor_simulator.process.join()
 
