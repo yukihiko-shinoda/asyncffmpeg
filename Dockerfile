@@ -1,4 +1,4 @@
-FROM futureys/claude-code-python-development:20251104123000
+FROM futureys/claude-code-python-development:20260221145500
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     # To install ruamel-yaml-clib (the dependency of semgrep)
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 COPY pyproject.toml /workspace
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync
+    uv sync --python 3.13
 COPY . /workspace
 ENTRYPOINT [ "uv", "run" ]
 CMD ["invoke", "test.coverage"]
