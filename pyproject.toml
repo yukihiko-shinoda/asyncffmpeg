@@ -113,8 +113,10 @@ classifiers = [
 dependencies = [
     # To control ffmpeg by Python
     "ffmpeg-python",
+    # To display progress of FFmpeg operations
+    "livesubprocess",
     # To handle Ctrl + C event in Windows for graceful shutdown FFmpeg
-    "pywin32; sys_platform == 'win32'"
+    "pywin32; sys_platform == 'win32'",
 ]
 
 [project.urls]

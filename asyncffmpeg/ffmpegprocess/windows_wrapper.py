@@ -8,6 +8,7 @@ There are 2 purposes:
 
 from __future__ import annotations
 
+import contextlib
 import sys
 from pathlib import Path
 
@@ -16,12 +17,11 @@ from pathlib import Path
 from subprocess import CREATE_NEW_PROCESS_GROUP  # type: ignore[attr-defined]  # nosec
 from subprocess import PIPE  # nosec
 from subprocess import Popen  # nosec
+from subprocess import TimeoutExpired  # nosec
 
 import ffmpeg
 
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
-from asyncffmpeg.pipe.realtime_pipe_reader import RealtimePipeReader
-from asyncffmpeg.pipe.realtime_pipe_reader import StringRealtimePipeReader
 
 
 class FFmpegProcessWindowsWrapper(FFmpegProcess):
@@ -40,11 +40,19 @@ class FFmpegProcessWindowsWrapper(FFmpegProcess):
         #   S603: Imput is limited enough.
         return Popen(argument, creationflags=CREATE_NEW_PROCESS_GROUP, stdout=PIPE, stderr=PIPE)  # noqa: S603  # nosec
 
-    def create_realtime_pipe_reader(self) -> RealtimePipeReader:
-        return StringRealtimePipeReader(self.popen)
-
     async def quit(self, time_to_force_termination: float | None = None) -> None:
-        self.logger.info(self.realtime_pipe_reader.read_stdout())
-        self.logger.error(self.realtime_pipe_reader.read_stderr())
-        self.popen.wait(time_to_force_termination)
-        self.logger.error(self.realtime_pipe_reader.read_stderr())
+        """Quits the Windows FFmpeg wrapper process.
+
+        Overrides the base class to skip sending the 'q' key via communicate(), because FFmpeg runs inside a child
+        Python process launched with CREATE_NEW_PROCESS_GROUP. The communicate()-based graceful shutdown does not work
+        reliably across that process boundary.
+
+        Instead, this implementation waits for the child process to finish (suppressing TimeoutExpired), terminates it,
+        then drains remaining stdout/stderr from the StringRealtimePipeReader.
+        """
+        time_to_force_termination = self.get_time_to_force_termination(time_to_force_termination)
+        with contextlib.suppress(TimeoutExpired):
+            self.popen.wait(time_to_force_termination)
+        self.popen.terminate()
+        stdout, _return_code = await self.live_popen.wait()
+        self.logger.info(stdout)
