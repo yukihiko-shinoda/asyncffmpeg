@@ -34,7 +34,22 @@ class KeyboardInterrupter(Generic[TypeVarReturnValue]):
         self.logger = getLogger(__name__)
 
     def test_keyboard_interrupt(self) -> None:
-        """Tests keyboard interrupt and send response to pytest by socket when succeed."""
+        """Tests keyboard interrupt and send response to pytest by socket when succeed.
+
+        The assertion window is only ~0.25 s (SECOND_SLEEP_FOR_TEST_MIDDLE).
+        Any blocking call inside quit() that exceeds this budget will cause
+        ``assert self.task.done()`` to fail.
+
+        Event timeline after ``os.kill(0, CTRL_C_EVENT)``::
+
+            t = 0s    CTRL_C_EVENT sent to process group A
+            t ≈ 0s    subprocess_wrapper_windows.py raises KeyboardInterrupt → asyncio.run() exits
+            t ≈ 0s    Worker process raises KeyboardInterrupt → FFmpegCoroutine.execute()
+                      calls ``await self.ffmpeg_process.quit()``
+            t ≈ 0s    quit() must return quickly — any popen.wait(N) blocks for N seconds
+            t = 0.25s test_keyboard_interrupt() wakes from time.sleep(0.25)
+            t = 0.25s ``assert self.task.done()`` — fails if quit() is still blocking
+        """
         self.logger.debug("Test keyboard interrupt start")
         try:
             asyncio.run(self.keyboard_interrupt())
