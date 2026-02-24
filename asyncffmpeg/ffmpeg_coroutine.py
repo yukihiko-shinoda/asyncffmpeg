@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING
 from typing import Any
 from typing import Callable
 from typing import Generic
-from typing import NoReturn
 from typing import TypeVar
 
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
@@ -82,6 +81,15 @@ class FFmpegCoroutine(Generic[TypeVarFFmpegProcess]):
     # Reason:
     #   ANN401: To follow the specification of Python.
     #   no cover: Can't collect coverage because of termination.
-    def sigterm_handler(self, _signum: int, _frame: Any | None) -> NoReturn:  # noqa: ANN401 # pragma: no cover
+    def sigterm_handler(self, _signum: int, _frame: Any | None) -> None:  # noqa: ANN401 # pragma: no cover
+        """Handle SIGTERM signal."""
         self.logger.debug("SIGTERM handler: Start")
-        raise CancelledError
+        try:
+            loop = asyncio.get_running_loop()
+            # When an event loop is active, raise CancelledError within tasks rather than
+            # propagating it from the signal handler (which would abort the loop before the
+            # except block in execute() can run).
+            for task in asyncio.all_tasks(loop):
+                task.cancel()
+        except RuntimeError:
+            raise CancelledError from None  # No event loop running; raise directly

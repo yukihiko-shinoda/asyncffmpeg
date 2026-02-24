@@ -7,7 +7,6 @@ see: https://github.com/nedbat/coveragepy/issues/481
 from __future__ import annotations
 
 import multiprocessing
-import os
 import signal
 from contextlib import AbstractContextManager
 from queue import Empty
@@ -17,8 +16,6 @@ from typing import Callable
 from typing import Generic
 from typing import Literal
 from typing import NoReturn
-
-import psutil
 
 from tests.testlibraries.types import ParamSpecCoroutineFunctionArguments
 from tests.testlibraries.types import TypeVarArgument
@@ -85,12 +82,9 @@ class ProcessPoolExecutorSimulator(Generic[TypeVarReturnValue]):
 
         # Reason: To follow the specification of Python.
         def handler(_signum: int, _frame: Any | None) -> NoReturn:  # noqa: ANN401
-            # To stop running generator, it requires to be run in subprocess
-            # and terminate process when stop.
-            current_process = psutil.Process(os.getpid())
-            child_processes = current_process.children()
-            for child_process in child_processes:
-                child_process.send_signal(signal.SIGINT)
+            # Child processes receive SIGINT directly from simulate_ctrl_c_in_posix
+            # (which sends recursively). Propagating here would cause double-SIGINT,
+            # interrupting the except-block cleanup in execute() a second time.
             raise KeyboardInterrupt
 
         signal.signal(signal.SIGINT, handler)

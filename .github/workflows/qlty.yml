@@ -9,7 +9,9 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - run: sudo apt install ffmpeg
+      - run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
         with:

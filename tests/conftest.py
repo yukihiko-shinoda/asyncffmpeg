@@ -87,3 +87,34 @@ def code_and_environment_example(
     shutil.copy(path_sut, tmp_path)
     shutil.copy(path_file_input, tmp_path / "input.mp4")
     return tmp_path / path_sut.name
+
+
+class LoggingEnvironment:
+    """Environment for logging in subprocess."""
+
+    def __init__(self, tmp_path: Path) -> None:
+        self.debug_log_path = tmp_path / "subprocess_debug.log"
+
+    def create_env(self) -> dict[str, str]:
+        """Create environment variables for subprocess."""
+        env: dict[str, str] = {}
+        env.update(os.environ)
+        pythonpath = env.get("PYTHONPATH")
+        env["PYTHONPATH"] = str(Path(__file__).parent.parent) + (
+            "" if pythonpath is None else (os.pathsep + pythonpath)
+        )
+        env["ASYNCFFMPEG_DEBUG_LOG"] = str(self.debug_log_path)
+        return env
+
+    def get_log_content(self) -> str:
+        """Get the content of the debug log."""
+        return (
+            self.debug_log_path.read_text(encoding="utf-8")
+            if self.debug_log_path.exists()
+            else "(log file not created)"
+        )
+
+
+@pytest.fixture
+def logging_environment(tmp_path: Path) -> LoggingEnvironment:
+    return LoggingEnvironment(tmp_path)

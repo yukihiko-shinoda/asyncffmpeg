@@ -16,7 +16,9 @@ jobs:
       fail-fast: false
     steps:
       - if: matrix.os == 'ubuntu-latest'
-        run: sudo apt install ffmpeg
+        run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
       - if: matrix.os == 'windows-latest'
         run: choco install ffmpeg
       - uses: actions/checkout@v6

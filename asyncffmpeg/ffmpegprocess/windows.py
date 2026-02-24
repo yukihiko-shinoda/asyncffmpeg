@@ -25,7 +25,7 @@ from asyncffmpeg.ffmpegprocess.interface import BaseFFmpegProcess
 class FFmpegProcessWindows(BaseFFmpegProcess):
     """FFmpeg process wrapping Popen object."""
 
-    def __init__(self, time_to_force_termination: int, argument: list[str]) -> None:
+    def __init__(self, time_to_force_termination: float, argument: list[str]) -> None:
         self.argument = argument
         basicConfig(stream=sys.stdout, level=DEBUG)
         super().__init__(time_to_force_termination)
@@ -55,11 +55,11 @@ class FFmpegProcessWindows(BaseFFmpegProcess):
             win32con.CTRL_CLOSE_EVENT,
         ):
             self.logger.info("Console event %s: shutting down bus", event)
-            asyncio.run(self.quit(self.time_to_force_termination))
+            asyncio.run(self.quit(self.get_time_to_force_termination(self.time_to_force_termination)))
             # 'First to return True stops the calls'  noqa: ERA001
             return 1
         return 0
 
 
-ffmpeg_process = FFmpegProcessWindows(int(sys.argv[1]), sys.argv[2:])
+ffmpeg_process = FFmpegProcessWindows(float(sys.argv[1]), sys.argv[2:])
 asyncio.run(ffmpeg_process.wait())
