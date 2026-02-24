@@ -42,10 +42,20 @@ class KeyboardInterrupter(Generic[TypeVarReturnValue]):
             print("Sleep in except")
             time.sleep(SECOND_SLEEP_FOR_TEST_MIDDLE)
             print("Assert in except")
+            self.debug_task()
             assert self.task is not None
             assert self.task.done()
             assert self.task.cancelled()
             raise
+
+    def debug_task(self) -> None:
+        """Debug task state."""
+        self.logger.debug(
+            "Debug task: task=%s done=%s cancelled=%s",
+            self.task,
+            self.task.done() if self.task is not None else "N/A",
+            self.task.cancelled() if self.task is not None else "N/A",
+        )
 
     async def keyboard_interrupt(self) -> None:
         """Simulates keyboard interrupt by CTRL_C_EVENT."""
@@ -55,13 +65,20 @@ class KeyboardInterrupter(Generic[TypeVarReturnValue]):
         process_id = await self.get_process_id
         try:
             # Reason: only for Windows. pylint: disable=no-member
+            self.logger.debug("Sending CTRL_C_EVENT to process_id=%d", process_id)
             os.kill(process_id, signal.CTRL_C_EVENT)  # type: ignore[attr-defined]
+            self.logger.debug("CTRL_C_EVENT sent; sleeping %.2fs", SECOND_SLEEP_FOR_TEST_MIDDLE)
             print("Await task")
             await self.task
         except KeyboardInterrupt:
             print("Await task in except")
             # await self.task
             print("Assert")
+            self.logger.debug(
+                "KeyboardInterrupt in keyboard_interrupt: task.done()=%s task.cancelled()=%s",
+                self.task.done(),
+                self.task.cancelled(),
+            )
             assert not self.task.done()
             print("Task not done")
             assert not self.task.cancelled()

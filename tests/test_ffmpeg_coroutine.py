@@ -1,7 +1,6 @@
 """Tests for FFmpegCoroutine."""
 
 import asyncio
-import os
 import shutil
 import signal
 
@@ -24,6 +23,7 @@ import pytest
 from asyncffmpeg import FFmpegCoroutineFactory
 from asyncffmpeg import FFmpegProcessError
 from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
+from tests.conftest import LoggingEnvironment
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineCopy
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
@@ -161,26 +161,26 @@ class TestFFmpegCoroutine:
 
     @staticmethod
     @pytest.mark.skipif(sys.platform != "win32", reason="test for Windows only")
-    def test_keyboard_interrupt_ctrl_c_new_window(path_file_input: Path, path_file_output: Path) -> None:
+    def test_keyboard_interrupt_ctrl_c_new_window(
+        logging_environment: LoggingEnvironment,
+        path_file_input: Path,
+        path_file_output: Path,
+    ) -> None:
         """see:
 
         - Answer: Sending ^C to Python subprocess objects on Windows
           https://stackoverflow.com/a/7980368/12721873
         """
-        env: dict[str, str] = {}
-        env.update(os.environ)
-        pythonpath = env.get("PYTHONPATH")
-        env["PYTHONPATH"] = str(Path(__file__).parent.parent) + (
-            "" if pythonpath is None else (os.pathsep + pythonpath)
-        )
         command = f"start {sys.executable} tests\\testlibraries\\subprocess_wrapper_windows.py"
         # shell=True required: 'start' is a Windows shell built-in command, not an executable.
         # This is safe as the command uses only sys.executable and hardcoded paths with no user input.
-        with Popen(command, shell=True, env=env) as popen:  # noqa: DUO116,S602,RUF100  # nosec
+        with Popen(command, shell=True, env=logging_environment.create_env()) as popen:  # noqa: DUO116,S602,RUF100  # nosec
             LocalSocket.send(str(path_file_input))
             assert LocalSocket.receive() == "Next"
             LocalSocket.send(str(path_file_output))
-            assert LocalSocket.receive() == "Test succeed"
+            received = LocalSocket.receive()
+            log_content = logging_environment.get_log_content()
+            assert received == "Test succeed", f"Subprocess sent: {received!r}\nDebug log:\n{log_content}"
             assert popen.wait() == 0
 
     # Since Python can't trap signal.SIGTERM in Windows.
