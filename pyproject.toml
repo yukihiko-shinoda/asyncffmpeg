@@ -48,7 +48,7 @@ dev = [
     "pytest",
     "pytest-resource-path",
     "pyvelocity",
-    "radon<6.0.0",
+    "radon<7.0.0",
     "ruff",
     "semgrep",
     # To use ParamSpec
