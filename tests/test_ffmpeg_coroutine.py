@@ -1,5 +1,7 @@
 """Tests for FFmpegCoroutine."""
 
+from __future__ import annotations
+
 import asyncio
 import shutil
 import signal
@@ -8,14 +10,11 @@ import signal
 import subprocess  # nosec
 import sys
 import time
-from contextlib import AbstractContextManager
 from logging import DEBUG
-from multiprocessing.context import ForkContext
-from multiprocessing.process import BaseProcess
-from pathlib import Path
 
 # Reason: This package requires to use subprocess.
 from subprocess import Popen  # nosec
+from typing import TYPE_CHECKING
 from typing import Callable
 
 import psutil
@@ -23,15 +22,22 @@ import pytest
 
 from asyncffmpeg import FFmpegCoroutineFactory
 from asyncffmpeg import FFmpegProcessError
-from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
-from tests.conftest import LoggingEnvironment
-from tests.conftest import SignalTestEnvironment
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineCopy
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
 from tests.testlibraries.example_use_case import example_use_case
 from tests.testlibraries.keyboardinterrupter.local_socket import LocalSocket
 from tests.testlibraries.process_pool_executor_simulator import ProcessPoolExecutorSimulator
+
+if TYPE_CHECKING:
+    from contextlib import AbstractContextManager
+    from multiprocessing.context import ForkContext
+    from multiprocessing.process import BaseProcess
+    from pathlib import Path
+
+    from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
+    from tests.conftest import LoggingEnvironment
+    from tests.conftest import SignalTestEnvironment
 
 
 class StabAfterStart:

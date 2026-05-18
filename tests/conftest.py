@@ -1,22 +1,28 @@
 """Configuration of pytest."""
 
+from __future__ import annotations
+
 import dataclasses
 import logging
 import multiprocessing
 import os
 import shutil
 import time
-from collections.abc import Generator
 from contextlib import AbstractContextManager
 from contextlib import contextmanager
 from logging import handlers
 from multiprocessing import Queue
-from multiprocessing.context import ForkContext
 from pathlib import Path
 from queue import Empty
+from typing import TYPE_CHECKING
 from typing import Callable
 
 import pytest
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from multiprocessing.context import ForkContext
+
 
 collect_ignore = ["setup.py"]
 
