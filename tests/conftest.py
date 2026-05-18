@@ -1,19 +1,28 @@
 """Configuration of pytest."""
 
+from __future__ import annotations
+
+import dataclasses
 import logging
+import multiprocessing
 import os
 import shutil
 import time
-from collections.abc import Generator
 from contextlib import AbstractContextManager
 from contextlib import contextmanager
 from logging import handlers
 from multiprocessing import Queue
 from pathlib import Path
 from queue import Empty
+from typing import TYPE_CHECKING
 from typing import Callable
 
 import pytest
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from multiprocessing.context import ForkContext
+
 
 collect_ignore = ["setup.py"]
 
@@ -62,6 +71,48 @@ def caplog_workaround() -> Callable[[], AbstractContextManager[None]]:
             logger.handle(log_record)
 
     return ctx
+
+
+@pytest.fixture
+def fork_mp_context() -> ForkContext:
+    """Provide a multiprocessing context with 'fork' start method.
+
+    Python 3.14 changed the default multiprocessing start method on Linux from "fork" to "forkserver". With
+    "forkserver" the child's ppid is the daemon's PID, not os.getpid(), so psutil.wait() returns None instead of the
+    exit code. "fork" also lets the child inherit the QueueHandler added by caplog_workaround, which is required for
+    subprocess log capture.
+    """
+    return multiprocessing.get_context("fork")
+
+
+@dataclasses.dataclass
+class SignalTestEnvironment:
+    """Aggregated fixtures for signal-handling tests."""
+
+    path_file_input: Path
+    path_file_output: Path
+    caplog: pytest.LogCaptureFixture
+    caplog_workaround: Callable[[], AbstractContextManager[None]]
+    fork_mp_context: ForkContext
+
+
+@pytest.fixture
+def signal_test_environment(
+    path_file_input: Path,  # Reason: pytest fixture. pylint: disable=redefined-outer-name
+    path_file_output: Path,  # Reason: pytest fixture. pylint: disable=redefined-outer-name
+    caplog: pytest.LogCaptureFixture,
+    # Reason: pytest fixture. pylint: disable-next=redefined-outer-name
+    caplog_workaround: Callable[[], AbstractContextManager[None]],
+    fork_mp_context: ForkContext,  # Reason: pytest fixture. pylint: disable=redefined-outer-name
+) -> SignalTestEnvironment:
+    """Aggregate fixtures for signal-handling tests."""
+    return SignalTestEnvironment(
+        path_file_input=path_file_input,
+        path_file_output=path_file_output,
+        caplog=caplog,
+        caplog_workaround=caplog_workaround,
+        fork_mp_context=fork_mp_context,
+    )
 
 
 @pytest.fixture

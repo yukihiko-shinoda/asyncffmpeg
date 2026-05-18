@@ -6,13 +6,16 @@ on:
   pull_request:
     branches:
       - main
+permissions:
+  contents: read  # Advanced Security suggested for Principle of Least Privilege in pull request review
+  packages: read  # Advanced Security suggested for Principle of Least Privilege in pull request review
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: [ '3.13', '3.12', '3.11', '3.10', '3.9' ]
+        python-version: [ '3.14', '3.13', '3.12', '3.11', '3.10', '3.9' ]
       fail-fast: false
     steps:
       - if: matrix.os == 'ubuntu-latest'
@@ -37,3 +40,5 @@ jobs:
         run: uv run invoke test.all
   call-workflow:
     uses: yukihiko-shinoda/invoke-lint/.github/workflows/reusable-lint.yml@main
+    with:
+      enable-xenon: false

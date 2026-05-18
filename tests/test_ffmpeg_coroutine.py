@@ -1,5 +1,7 @@
 """Tests for FFmpegCoroutine."""
 
+from __future__ import annotations
+
 import asyncio
 import shutil
 import signal
@@ -8,13 +10,11 @@ import signal
 import subprocess  # nosec
 import sys
 import time
-from contextlib import AbstractContextManager
 from logging import DEBUG
-from multiprocessing.context import Process
-from pathlib import Path
 
 # Reason: This package requires to use subprocess.
 from subprocess import Popen  # nosec
+from typing import TYPE_CHECKING
 from typing import Callable
 
 import psutil
@@ -22,14 +22,22 @@ import pytest
 
 from asyncffmpeg import FFmpegCoroutineFactory
 from asyncffmpeg import FFmpegProcessError
-from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
-from tests.conftest import LoggingEnvironment
 from tests.testlibraries import SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineCopy
 from tests.testlibraries.create_stream_spec_croutine import CreateStreamSpecCoroutineFilter
 from tests.testlibraries.example_use_case import example_use_case
 from tests.testlibraries.keyboardinterrupter.local_socket import LocalSocket
 from tests.testlibraries.process_pool_executor_simulator import ProcessPoolExecutorSimulator
+
+if TYPE_CHECKING:
+    from contextlib import AbstractContextManager
+    from multiprocessing.context import ForkContext
+    from multiprocessing.process import BaseProcess
+    from pathlib import Path
+
+    from asyncffmpeg.ffmpegprocess.interface import FFmpegProcess
+    from tests.conftest import LoggingEnvironment
+    from tests.conftest import SignalTestEnvironment
 
 
 class StabAfterStart:
@@ -85,23 +93,30 @@ class TestFFmpegCoroutine:
     @pytest.mark.skipif(sys.platform == "win32", reason="test for Linux only")
     def test_keyboard_interrupt(
         self,
-        path_file_input: Path,
-        path_file_output: Path,
-        caplog: pytest.LogCaptureFixture,
-        caplog_workaround: Callable[[], AbstractContextManager[None]],
+        signal_test_environment: SignalTestEnvironment,
     ) -> None:
         """FFmpeg coroutine should quit when CTRL + C in POSIX."""
-        caplog.set_level(DEBUG, logger="asynccpu.process_task_pool_executor")
-        with caplog_workaround():
-            self.keyboard_interrupt(path_file_input, path_file_output)
+        signal_test_environment.caplog.set_level(DEBUG, logger="asynccpu.process_task_pool_executor")
+        with signal_test_environment.caplog_workaround():
+            self.keyboard_interrupt(
+                signal_test_environment.path_file_input,
+                signal_test_environment.path_file_output,
+                signal_test_environment.fork_mp_context,
+            )
         # In Python 3.13+, there's a race condition where the subprocess is terminated
         # before exception handler logs can be written. We verify the signal handler ran.
-        assert "SIGTERM handler: Start" in caplog.text or "FFmpeg process quit finish" in caplog.text
+        assert (
+            "SIGTERM handler: Start" in signal_test_environment.caplog.text
+            or "FFmpeg process quit finish" in signal_test_environment.caplog.text
+        )
 
     @classmethod
-    def keyboard_interrupt(cls, path_file_input: Path, path_file_output: Path) -> None:
+    def keyboard_interrupt(cls, path_file_input: Path, path_file_output: Path, context: ForkContext) -> None:
         """Test process of keyboard interrupt."""
-        process = Process(target=cls.report_raises_keyboard_interrupt, args=(path_file_input, path_file_output))
+        process = context.Process(
+            target=cls.report_raises_keyboard_interrupt,
+            args=(path_file_input, path_file_output),
+        )
         process.start()
         assert LocalSocket.receive() == "Ready"
         time.sleep(SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX)
@@ -145,7 +160,7 @@ class TestFFmpegCoroutine:
         process_pool_executor_simulator.process.join()
 
     @staticmethod
-    def simulate_ctrl_c_in_posix(process: Process) -> None:
+    def simulate_ctrl_c_in_posix(process: BaseProcess) -> None:
         """see:
 
         - python - Handling keyboard interrupt when using subproccess - Stack Overflow
@@ -190,21 +205,25 @@ class TestFFmpegCoroutine:
     @pytest.mark.skipif(sys.platform == "win32", reason="test for Linux only")
     def test_terminate(
         self,
-        path_file_input: Path,
-        path_file_output: Path,
-        caplog: pytest.LogCaptureFixture,
-        caplog_workaround: Callable[[], AbstractContextManager[None]],
+        signal_test_environment: SignalTestEnvironment,
     ) -> None:
         """FFmpeg coroutine should quit when CTRL + C in POSIX."""
-        caplog.set_level(DEBUG, logger="asynccpu.process_task_pool_executor")
-        with caplog_workaround():
-            self.terminate(path_file_input, path_file_output)
-        assert "FFmpeg process quit finish" in caplog.text
+        signal_test_environment.caplog.set_level(DEBUG, logger="asynccpu.process_task_pool_executor")
+        with signal_test_environment.caplog_workaround():
+            self.terminate(
+                signal_test_environment.path_file_input,
+                signal_test_environment.path_file_output,
+                signal_test_environment.fork_mp_context,
+            )
+        assert "FFmpeg process quit finish" in signal_test_environment.caplog.text
 
     @classmethod
-    def terminate(cls, path_file_input: Path, path_file_output: Path) -> None:
+    def terminate(cls, path_file_input: Path, path_file_output: Path, context: ForkContext) -> None:
         """Test process of keyboard interrupt."""
-        process = Process(target=cls.report_raises_cencelled_error, args=(path_file_input, path_file_output))
+        process = context.Process(
+            target=cls.report_raises_cencelled_error,
+            args=(path_file_input, path_file_output),
+        )
         process.start()
         assert LocalSocket.receive() == "Ready"
         time.sleep(SECOND_SLEEP_FOR_TEST_KEYBOARD_INTERRUPT_CTRL_C_POSIX)

@@ -16,6 +16,7 @@ from typing import Callable
 from typing import Generic
 from typing import Literal
 from typing import NoReturn
+from typing import cast
 
 from tests.testlibraries.types import ParamSpecCoroutineFunctionArguments
 from tests.testlibraries.types import TypeVarArgument
@@ -25,6 +26,26 @@ if TYPE_CHECKING:
     from collections.abc import Awaitable
     from collections.abc import Generator
     from types import TracebackType
+
+
+class MultiprocessingContextFactory:
+    """Creates multiprocessing contexts using the 'fork' start method.
+
+    Python 3.14 changed the default multiprocessing start method on Linux from 'fork' to
+    'forkserver'. With 'forkserver' (and 'spawn'), subprocess arguments are serialized via
+    pickle before being sent to the child. This breaks two things in this test helper:
+    1. asyncio coroutine objects stored in CoroutineExecutor.coroutine cannot be pickled,
+       causing child process creation to fail immediately.
+    2. The QueueHandler added by caplog_workaround is not inherited by children started via
+       'forkserver', so subprocess log output never reaches the parent's caplog.
+    Using 'fork' ensures children inherit the parent's memory space, including the live
+    coroutine state and the logging handler.
+    """
+
+    @staticmethod
+    def create() -> type[multiprocessing.Process]:
+        """Returns the Process class from a fork multiprocessing context."""
+        return cast("type[multiprocessing.Process]", multiprocessing.get_context("fork").Process)
 
 
 class CoroutineExecutor(
@@ -48,7 +69,7 @@ class CoroutineExecutor(
         return False
 
     def run_step_in_child_process(self, arg: TypeVarArgument) -> TypeVarReturnValue:
-        process = multiprocessing.Process(target=self.run_step, args=(arg,))
+        process = MultiprocessingContextFactory.create()(target=self.run_step, args=(arg,))
         process.start()
         process.join()
         return self.queue.get()
@@ -70,7 +91,11 @@ class ProcessPoolExecutorSimulator(Generic[TypeVarReturnValue]):
         *args: ParamSpecCoroutineFunctionArguments.args,
         **kwargs: ParamSpecCoroutineFunctionArguments.kwargs,
     ) -> None:
-        self.process = multiprocessing.Process(target=self.run, args=(corofn, *args), kwargs=kwargs)
+        self.process = MultiprocessingContextFactory.create()(
+            target=self.run,
+            args=(corofn, *args),
+            kwargs=kwargs,
+        )
 
     @staticmethod
     def run(
