@@ -38,7 +38,7 @@ class BaseFFmpegProcess:
         raise NotImplementedError  # pragma: no cover
 
     async def wait(self) -> None:
-        """Waits for subprocess to finish."""
+        """Wait for subprocess to finish."""
         stdout, return_code = await self.live_popen.wait()
         self.logger.info(stdout)
         # Check for error conditions:
@@ -72,7 +72,7 @@ class BaseFFmpegProcess:
         self.popen.terminate()
 
     def get_time_to_force_termination(self, time_to_force_termination: float | None) -> float:
-        """Gets the time to force termination."""
+        """Get the time to force termination."""
         return self.time_to_force_termination if time_to_force_termination is None else time_to_force_termination
 
 

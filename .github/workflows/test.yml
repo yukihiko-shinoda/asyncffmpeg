@@ -7,8 +7,7 @@ on:
     branches:
       - main
 permissions:
-  contents: read  # Advanced Security suggested for Principle of Least Privilege in pull request review
-  packages: read  # Advanced Security suggested for Principle of Least Privilege in pull request review
+  contents: read
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -39,6 +38,4 @@ jobs:
       - if: runner.os == 'Linux'
         run: uv run invoke test.all
   call-workflow:
-    uses: yukihiko-shinoda/invoke-lint/.github/workflows/reusable-lint.yml@main
-    with:
-      enable-xenon: false
+    uses: yukihiko-shinoda/reusable-workflow-invoke-lint-lint/.github/workflows/workflow.yml@0966c64de69c044585bbdca96980a8393c761829  # v1.0.0

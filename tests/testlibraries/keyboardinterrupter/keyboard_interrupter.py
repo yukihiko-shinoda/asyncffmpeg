@@ -73,7 +73,7 @@ class KeyboardInterrupter(Generic[TypeVarReturnValue]):
         )
 
     async def keyboard_interrupt(self) -> None:
-        """Simulates keyboard interrupt by CTRL_C_EVENT."""
+        """Simulate keyboard interrupt by CTRL_C_EVENT."""
         self.logger.debug("Keyboard interrupt start")
         print("Create task")
         self.task = asyncio.create_task(self.target_coroutine)

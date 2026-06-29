@@ -24,7 +24,7 @@ from tests.testlibraries.keyboardinterrupter.local_socket import LocalSocket
 
 
 async def get_process_id() -> int:
-    """The process to get process id to kill."""
+    """Return the process id to kill."""
     print("Await sleep")
     logger = getLogger(__name__)
     logger.debug("Get process id")
@@ -62,7 +62,7 @@ class Checker:
         self.logger = getLogger(__name__)
 
     def check_record(self, log_record: LogRecord) -> None:
-        """Checks a single log record."""
+        """Check a single log record."""
         self.logger.handle(log_record)
         if "FFmpeg process quit finish" in log_record.message:
             self.ffmpeg_process_quit_finish = True
@@ -77,7 +77,7 @@ class Checker:
 
 
 def check_log(queue_log_record: "queue.Queue[LogRecord]") -> None:
-    """Checks log."""
+    """Check log."""
     logger = getLogger(__name__)
     checker = Checker()
     messages = []
@@ -99,7 +99,7 @@ def check_log(queue_log_record: "queue.Queue[LogRecord]") -> None:
 
 
 def main() -> None:
-    """Tests CTRL + C."""
+    """Test CTRL + C."""
     manager = Manager()
     queue_log_record = manager.Queue(-1)
     path_file_input = LocalSocket.receive()
