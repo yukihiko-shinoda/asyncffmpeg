@@ -49,7 +49,7 @@ class FFmpegCoroutine(Generic[TypeVarFFmpegProcess]):
         *,
         after_start: Callable[[TypeVarFFmpegProcess], Awaitable[Any]] | None = None,
     ) -> None:
-        """Executes FFmpeg process.
+        """Execute FFmpeg process.
 
         This method defines workflow including interruption and logging.
         """

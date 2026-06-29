@@ -4,58 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
-    # For testing
-    "asynccpu",
-    "bandit",
-    "build",
-    "bump-my-version",
-    "cohesion",
-    # The coverage==3.5.3 is difficult to analyze its dependencies by dependencies management tool,
-    # so we should avoid 3.5.3 or lower.
-    # - Command: "pipenv install --skip-lock" fails
-    #   since it tries to parse legacy package metadata and raise InstallError
-    #   · Issue #5595 · pypa/pipenv
-    #   https://github.com/pypa/pipenv/issues/5595
-    "coverage>=3.5.4",
-    # The dlint less than 0.14.0 limits max version of flake8.
-    # - dlint/requirements.txt at 0.13.0 · dlint-py/dlint
-    #   https://github.com/dlint-py/dlint/blob/0.13.0/requirements.txt#L1
-    "dlint>=0.14.0",
-    # We exclude docformatter versions before 1.7.8 because they depend on untokenize==0.1.1,
-    # whose setup.py uses ast.Constant.s that was removed in Python 3.14.
-    # docformatter 1.7.8 and later require Python 3.10 or later instead of untokenize.
-    # And, we specify as follows if the latest supported Python version is less than 3.11,
-    # so that docformatter can read the settings in pyproject.toml:
-    "docformatter[tomli]>=1.7.8; python_version < '3.11' and python_version >= '3.10'",
-    "docformatter>=1.7.8; python_version >= '3.11'",
-    "dodgy",
-    # The hacking depends flake8 ~=6.1.0 or ~=5.0.1 or ~=4.0.1.
-    # We should avoid the versions that is not compatible with the hacking,
-    # considering the speed of dependency calculation process
-    "flake8!=6.0.0,!=5.0.0,>=4.0.1",
-    # To replace E501 in pycodestyle with B950 in flake8-bugbear:
-    # - Using Black with other tools - Black 25.1.0 documentation
-    #   https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#bugbear
-    "flake8-bugbear",
-    # To use pyproject.toml for Flake8 configuration
-    "Flake8-pyproject",
-    # Latest hacking depends on legacy version of flake8, and legacy hacking doesn't narrow flake8 version.
-    # When unpin hacking, it has possibility to install too legacy version of hacking.
-    "hacking>=5.0.0",
-    "invokelint>=0.8.1",
-    "mypy",
-    # For testing
-    "psutil",
-    "pylint",
-    "pytest",
-    "pytest-resource-path",
-    "pyvelocity",
-    "ruff",
-    "semgrep",
-    # To use ParamSpec
-    "typing-extensions; python_version <= '3.9'",
-    "types-invoke",
-    "types-psutil",
+  # For testing
+  "asynccpu",
+  "bump-my-version",
+  "invokelint[basic]>=0.19.0",
+  # For testing
+  "psutil",
+  "pytest-resource-path",
+  "pyvelocity",
+  # To use ParamSpec
+  "typing-extensions; python_version <= '3.9'",
+  "types-psutil",
 ]
 
 [project]
@@ -67,57 +26,57 @@ requires-python = ">=3.9"
 license = {file = "LICENSE"}
 keywords = ["asyncffmpeg", "ffmpeg", "ffmpeg-python", "asyncio", "asynchronous", "video", "audio", "image", "capture", "conversion", "streaming", "processing"]
 authors = [
-    {name = "Yukihiko Shinoda", email = "yuk.hik.future@gmail.com"},
+  {name = "Yukihiko Shinoda", email = "yuk.hik.future@gmail.com"},
 ]
 maintainers = [
-    {name = "Yukihiko Shinoda", email = "yuk.hik.future@gmail.com"},
+  {name = "Yukihiko Shinoda", email = "yuk.hik.future@gmail.com"},
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Framework :: AsyncIO",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Telecommunications Industry",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Topic :: Multimedia",
-    "Topic :: Multimedia :: Graphics",
-    "Topic :: Multimedia :: Graphics :: Capture",
-    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
-    "Topic :: Multimedia :: Sound/Audio",
-    "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
-    "Topic :: Multimedia :: Sound/Audio :: Conversion",
-    "Topic :: Multimedia :: Video",
-    "Topic :: Multimedia :: Video :: Capture",
-    "Topic :: Multimedia :: Video :: Conversion",
-    "Topic :: Scientific/Engineering :: Image Processing",
-    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
-    "Topic :: Software Development",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System",
-    "Topic :: System :: Archiving",
-    "Topic :: System :: Archiving :: Compression",
-    "Topic :: System :: Archiving :: Packaging",
-    "Typing :: Typed",
+  "Development Status :: 5 - Production/Stable",
+  "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Telecommunications Industry",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Multimedia",
+  "Topic :: Multimedia :: Graphics",
+  "Topic :: Multimedia :: Graphics :: Capture",
+  "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+  "Topic :: Multimedia :: Sound/Audio",
+  "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
+  "Topic :: Multimedia :: Sound/Audio :: Conversion",
+  "Topic :: Multimedia :: Video",
+  "Topic :: Multimedia :: Video :: Capture",
+  "Topic :: Multimedia :: Video :: Conversion",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: System",
+  "Topic :: System :: Archiving",
+  "Topic :: System :: Archiving :: Compression",
+  "Topic :: System :: Archiving :: Packaging",
+  "Typing :: Typed",
 ]
 dependencies = [
-    # To control ffmpeg by Python
-    "ffmpeg-python",
-    # To display progress of FFmpeg operations
-    "livesubprocess",
-    # To handle Ctrl + C event in Windows for graceful shutdown FFmpeg
-    "pywin32; sys_platform == 'win32'",
+  # To control ffmpeg by Python
+  "ffmpeg-python",
+  # To display progress of FFmpeg operations
+  "livesubprocess",
+  # To handle Ctrl + C event in Windows for graceful shutdown FFmpeg
+  "pywin32; sys_platform == 'win32'",
 ]
 
 [project.urls]
@@ -146,13 +105,13 @@ replace = '__version__ = "{new_version}"'
 
 [tool.coverage.report]
 exclude_also = [
-    # Assume `if TYPE_CHECKING: ... else: ...` block is covered · Issue #831 · nedbat/coveragepy
-    #   https://github.com/nedbat/coveragepy/issues/831#issuecomment-517778185
-    "if TYPE_CHECKING:",
-    # Pylint will detect instead:
-    # - abstract-method / W0223 - Pylint 2.17.0-dev0 documentation
-    #   https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/abstract-method.html
-    "raise NotImplementedError",
+  # Assume `if TYPE_CHECKING: ... else: ...` block is covered · Issue #831 · nedbat/coveragepy
+  #   https://github.com/nedbat/coveragepy/issues/831#issuecomment-517778185
+  "if TYPE_CHECKING:",
+  # Pylint will detect instead:
+  # - abstract-method / W0223 - Pylint 2.17.0-dev0 documentation
+  #   https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/abstract-method.html
+  "raise NotImplementedError",
 ]
 
 [tool.coverage.run]
@@ -167,8 +126,8 @@ source = ["asyncffmpeg"]
 relative_files = true
 debug = ["pathmap"]
 omit = [
-    "asyncffmpeg/ffmpegprocess/windows.py",
-    "asyncffmpeg/ffmpegprocess/windows_wrapper.py",
+  "asyncffmpeg/ffmpegprocess/windows.py",
+  "asyncffmpeg/ffmpegprocess/windows_wrapper.py",
 ]
 
 [tool.docformatter]
@@ -212,21 +171,21 @@ strict = true
 
 [[tool.mypy.overrides]]
 module = [
-    "ffmpeg",
-    "win32api",
-    "win32con"
+  "ffmpeg",
+  "win32api",
+  "win32con"
 ]
 ignore_missing_imports = true
 
 [tool.pylint.master]
 extension-pkg-whitelist = [
-    "win32api"
+  "win32api"
 ]
 
 [tool.pylint]
 disable = [
-    # We check line length by flake8-bugbear B950.
-    "line-too-long",
+  # We check line length by flake8-bugbear B950.
+  "line-too-long",
 ]
 
 [tool.pylint.basic]
@@ -246,7 +205,7 @@ log_cli = true
 log_cli_level = "DEBUG"
 log_format = "%(asctime)s %(process)d %(levelname)s %(name)s:%(filename)s:%(lineno)d %(message)s"
 markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
 ]
 
 [tool.ruff]
@@ -254,31 +213,37 @@ line-length = 119
 
 [tool.ruff.lint]
 external = [
-    "DUO",  # dlint
-    "H",  # Openstack/hacking
+  "DUO",  # dlint
+  "H",    # Openstack/hacking
 ]
-select = ["ALL"]
+select = [
+  "ALL",
+  # Since compatible with PEP257, we can check docstring style by Ruff and don't need to consider about docstring style separately:
+  # - Should the first line of a Python function docstring be in imperative mood? (ruff / pydocstyle D401)
+  #   https://zenn.dev/y_shinoda/articles/pydocstyle-d401
+  "D401",    # First line should be in imperative mood
+]
 ignore = [
-    # lint.pydocstyle
-    # Reason: Docstring may be missed since docstring-min-length is set.
-    "D101",    # Missing docstring in public class
-    "D102",    # Missing docstring in public method
-    "D103",    # Missing docstring in public function
-    "D105",    # Missing docstring in magic method
-    "D106",    # Missing docstring in public nested class
-    "D107",    # Missing docstring in __init__
-    # Reason: First line may ends with function signature for expression.
-    "D402",    # First line should not be the function’s “signature”
-    # Reason: First line may ends with ":" for expression.
-    "D415",    # First line should end with a period, question mark, or exclamation point
-    # Reason: `Line too long` is checked by flake8-bugbear.
-    "E501",    # Line too long ({width} > {limit})
-    "T201",  # `print` found: Temporary
+  # lint.pydocstyle
+  # Reason: Docstring may be missed since docstring-min-length is set.
+  "D101",    # Missing docstring in public class
+  "D102",    # Missing docstring in public method
+  "D103",    # Missing docstring in public function
+  "D105",    # Missing docstring in magic method
+  "D106",    # Missing docstring in public nested class
+  "D107",    # Missing docstring in __init__
+  # Reason: First line may ends with function signature for expression.
+  "D402",    # First line should not be the function’s “signature”
+  # Reason: First line may ends with ":" for expression.
+  "D415",    # First line should end with a period, question mark, or exclamation point
+  # Reason: `Line too long` is checked by flake8-bugbear.
+  "E501",    # Line too long ({width} > {limit})
+  "T201",  # `print` found: Temporary
 ]
 unfixable = [
-    # When fix `return a and b != ""` as `return a and b`, mypy will report warning:
-    #   error: Incompatible return value type (got "Union[Literal[False], str]", expected "bool")  [return-value]
-    "PLC1901",
+  # When fix `return a and b != ""` as `return a and b`, mypy will report warning:
+  #   error: Incompatible return value type (got "Union[Literal[False], str]", expected "bool")  [return-value]
+  "PLC1901",
 ]
 
 [tool.ruff.lint.isort]

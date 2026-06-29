@@ -149,7 +149,7 @@ class TestFFmpegCoroutine:
 
     @classmethod
     async def keyboard_interrupt_sigint_for_coverage(cls, path_file_input: Path, path_file_output: Path) -> None:
-        """Simulates keyboard interrupt by SIGINT."""
+        """Simulate keyboard interrupt by SIGINT."""
         process_pool_executor_simulator = ProcessPoolExecutorSimulator(
             FFmpegCoroutineFactory.create().execute,
             CreateStreamSpecCoroutineFilter(path_file_input, path_file_output).create,

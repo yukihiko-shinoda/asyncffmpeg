@@ -44,7 +44,7 @@ class MultiprocessingContextFactory:
 
     @staticmethod
     def create() -> type[multiprocessing.Process]:
-        """Returns the Process class from a fork multiprocessing context."""
+        """Return the Process class from a fork multiprocessing context."""
         return cast("type[multiprocessing.Process]", multiprocessing.get_context("fork").Process)
 
 
@@ -103,7 +103,7 @@ class ProcessPoolExecutorSimulator(Generic[TypeVarReturnValue]):
         *args: ParamSpecCoroutineFunctionArguments.args,
         **kwargs: ParamSpecCoroutineFunctionArguments.kwargs,
     ) -> TypeVarReturnValue | None:
-        """Runs coroutine as generator and receive SIGINT to interrupt."""
+        """Run coroutine as generator and receive SIGINT to interrupt."""
 
         # Reason: To follow the specification of Python.
         def handler(_signum: int, _frame: Any | None) -> NoReturn:  # noqa: ANN401

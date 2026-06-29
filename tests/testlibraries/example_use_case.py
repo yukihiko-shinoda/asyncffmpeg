@@ -25,7 +25,7 @@ async def example_use_case_interrupt(
     queue_log_record: queue.Queue[LogRecord],
     configurer: Callable[[], Any],
 ) -> None:
-    """The example use case of FFmpegCroutine for E2E testing in case of interrupt."""
+    """Run the example use case of FFmpegCoroutine for E2E testing in case of interrupt."""
     logger = getLogger(__name__)
     logger.info("Example use case interrupt start")
     with ProcessTaskPoolExecutor(
@@ -46,7 +46,7 @@ async def example_use_case_interrupt(
 
 
 async def example_use_case(path_file_input: Path, path_file_output: Path) -> None:
-    """The example use case of FFmpegCroutine for E2E testing in case of interrupt."""
+    """Run the example use case of FFmpegCoroutine for E2E testing in case of interrupt."""
     with ProcessTaskPoolExecutor(max_workers=1, cancel_tasks_when_shutdown=True) as executor:
         task: Any = executor.create_process_task(
             FFmpegCoroutineFactory.create().execute,

@@ -24,7 +24,7 @@ async def create_stream_spec_filter() -> StreamSpec:
 
 
 async def main() -> None:
-    """Main function demonstrating concurrent FFmpeg operations."""
+    """Demonstrate concurrent FFmpeg operations."""
     ffmpeg_coroutine = FFmpegCoroutineFactory.create()
 
     with ProcessTaskPoolExecutor(max_workers=3, cancel_tasks_when_shutdown=True) as executor:

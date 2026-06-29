@@ -31,7 +31,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     # 2.676       For context, additional choices that could not be installed:
     # 2.676       * In libavdevice61:arm64 is available in versions 7:7.1.4-0+deb13u1, 7:7.1.3-0+deb13u1:
     # 2.676         - libavdevice61:arm64=7:7.1.3-0+deb13u1 is not selected for install
-    ffmpeg=7:7.1.4-0+deb13u1 \
+    ffmpeg=7:7.1.5-0+deb13u1 \
  && rm -rf /var/lib/apt/lists/*
 COPY pyproject.toml /workspace
 RUN --mount=type=cache,target=/root/.cache/uv \
