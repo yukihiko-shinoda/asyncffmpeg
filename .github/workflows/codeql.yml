@@ -18,6 +18,7 @@ on:
     branches: [ "main" ]
   schedule:
     - cron: '40 8 * * 4'
+  workflow_dispatch:
 
 permissions:
   # required for all workflows
