@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Subprocess wrapper for Windows."""
 
 import asyncio

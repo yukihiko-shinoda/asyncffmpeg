@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """For testing stdout and stderr."""
 
 import sys

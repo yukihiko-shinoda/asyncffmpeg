@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Type alias."""
 
 from __future__ import annotations

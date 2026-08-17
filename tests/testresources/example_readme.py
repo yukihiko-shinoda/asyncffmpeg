@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Example of README.md."""
 
 from __future__ import annotations

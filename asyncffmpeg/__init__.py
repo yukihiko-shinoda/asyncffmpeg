@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Top-level package for Asynchronous FFmpeg."""
 
 from asyncffmpeg.exceptions import *  # noqa: F403

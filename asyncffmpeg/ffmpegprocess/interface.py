@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """FFmpeg process wrapping Popen object."""
 
 from __future__ import annotations

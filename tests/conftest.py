@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Configuration of pytest."""
 
 from __future__ import annotations

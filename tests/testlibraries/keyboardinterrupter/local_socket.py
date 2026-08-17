@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """The socket to comunicate processes of different group each other."""
 
 import socket

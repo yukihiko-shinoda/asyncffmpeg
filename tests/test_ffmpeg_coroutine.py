@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Tests for FFmpegCoroutine."""
 
 from __future__ import annotations

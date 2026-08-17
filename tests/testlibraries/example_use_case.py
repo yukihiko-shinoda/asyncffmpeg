@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """The example use case of FFmpegCoroutine for E2E testing in case of interrupt."""
 
 from __future__ import annotations

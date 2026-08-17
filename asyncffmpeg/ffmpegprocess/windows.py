@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """The code to run in dedicated process group for Windows.
 
 There are 2 purposes:
