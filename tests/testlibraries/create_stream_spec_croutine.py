@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """Coroutines for creating stream spec."""
 
 from __future__ import annotations

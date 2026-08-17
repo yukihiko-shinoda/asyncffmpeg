@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """To collect coverage in except KeyboardInterrupt block.
 
 Since coverage.py can't trace asyncio.ProcessPoolExecutor.

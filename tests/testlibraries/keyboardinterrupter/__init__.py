@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """KeyboardInterrupter."""
 
 # When set 150, test_keyboard_interrupt_ctrl_c_popen failed in GitHub Actions.

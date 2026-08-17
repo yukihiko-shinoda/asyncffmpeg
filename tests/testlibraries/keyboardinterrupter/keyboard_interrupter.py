@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """To keep task property even raise KeyboardInterrupt."""
 
 from __future__ import annotations

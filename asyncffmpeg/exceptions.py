@@ -1,3 +1,4 @@
+# Copyright (C) 2026 Yukihiko Shinoda
 """This module implements exceptions for this package."""
 
 __all__ = ["FFmpegProcessError"]
