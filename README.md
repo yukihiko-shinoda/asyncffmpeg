@@ -1,7 +1,7 @@
 # Asynchronous FFmpeg
 
 [![Test](https://github.com/yukihiko-shinoda/asyncffmpeg/workflows/Test/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions?query=workflow%3ATest)
-[![CodeQL](https://github.com/yukihiko-shinoda/asyncffmpeg/workflows/CodeQL/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions?query=workflow%3ACodeQL)
+[![CodeQL](https://github.com/yukihiko-shinoda/asyncffmpeg/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/yukihiko-shinoda/asyncffmpeg/actions/workflows/github-code-scanning/codeql)
 [![Code Coverage](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg/coverage.svg)](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg)
 [![Maintainability](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg/maintainability.svg)](https://qlty.sh/gh/yukihiko-shinoda/projects/asyncffmpeg)
 [![Dependabot](https://flat.badgen.net/github/dependabot/yukihiko-shinoda/asyncffmpeg?icon=dependabot)](https://github.com/yukihiko-shinoda/asyncffmpeg/security/dependabot)
